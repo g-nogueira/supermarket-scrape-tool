@@ -9,16 +9,16 @@ open Azure.Identity
 open Azure.Security.KeyVault.Secrets
 
 let azureKeyVaultUrl = "https://smkt-scrape-tool-secrets.vault.azure.net/"
+
 let logMessage text =
     Logger.message $"Azure KeyVault: {text}"
 
-let secretClient =
-    SecretClient(Uri azureKeyVaultUrl, DefaultAzureCredential())
-    
-let getSecretAsync s=
+let secretClient = SecretClient(Uri azureKeyVaultUrl, DefaultAzureCredential())
+
+let getSecretAsync s =
     async {
         logMessage $"Getting {s}"
-        
+
         let! secretValue = secretClient.GetSecretAsync s |> Async.AwaitTask
 
         return secretValue.Value.Value

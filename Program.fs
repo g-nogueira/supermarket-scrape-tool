@@ -42,17 +42,12 @@ let initAzureConnection () =
         function
         | Ok a -> a
         | Error e -> failwith $"Stopped run due to fail to get Azure Cosmos DB connection string.\n{Error}"
-    
+
     let connectionString =
-        getCosmosDbConnectionString()
-        |> Async.RunSynchronously
-        |> stopOnFail
-    
-    let dbName =
-        getCosmosDbName()
-        |> Async.RunSynchronously
-        |> stopOnFail
-    
+        getCosmosDbConnectionString () |> Async.RunSynchronously |> stopOnFail
+
+    let dbName = getCosmosDbName () |> Async.RunSynchronously |> stopOnFail
+
     connectionString
     |> createCosmosClient
     |> createDatabase dbName
@@ -62,6 +57,7 @@ let initAzureConnection () =
 //let saveItem = saveToFile "output.txt"
 let saveItem container item =
     Logger.message $"Saving item {item.Name}"
+
     container
     |> AsyncResult.bind (addItemsToContainer<Product> item)
     |> AsyncResult.teeError (fun e -> printfn $"{e.Message}")
@@ -70,11 +66,11 @@ let saveItem container item =
 let main argv =
     let teeError = Result.teeError Logger.exc
     let container = initAzureConnection ()
+
     let scrape website =
-        $"Scraping { website |> ProductSource.toString }:" |> Logger.message
-        
-        scrapeWebsite website
-        |> Seq.map (saveItem container)
+        $"Scraping {website |> ProductSource.toString}:" |> Logger.message
+
+        scrapeWebsite website |> Seq.map (saveItem container)
 
     websites
     |> Seq.map scrape

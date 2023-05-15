@@ -12,10 +12,10 @@ type ProductSource =
         | PingoDoce -> "Pingo Doce"
         | Continente -> "Continente"
 
-    static member ofString (value: string) =
+    static member ofString(value: string) =
         match value |> String.toLower with
-        | "pingo doce" -> PingoDoce 
-        | "continente" -> Continente 
+        | "pingo doce" -> PingoDoce
+        | "continente" -> Continente
         | _ -> failwith $"Product Source not valid. Tried to parse {value}."
 
 
@@ -32,20 +32,19 @@ type PriceUnit =
         | Liter -> "Liter"
         | Rolls -> "Rolls"
 
-    static member ofString (value: string) =
+    static member ofString(value: string) =
         match value |> String.toLower with
-        | "kg" | "kgm" -> Kg 
-        | "un" -> Un 
+        | "kg"
+        | "kgm" -> Kg
+        | "un" -> Un
         | "ltr" -> Liter
         | "ro" -> Rolls
         | _ -> failwith $"Price Unit not valid. Tried to parse {value}."
 
 type Product =
-    {
-        id: Guid
-        Date: string
-        Name: string
-        Price: float
-        PriceUnit: PriceUnit
-        Source: ProductSource
-    }
+    { id: Guid
+      Date: string
+      Name: string
+      Price: float
+      PriceUnit: PriceUnit
+      Source: ProductSource }
