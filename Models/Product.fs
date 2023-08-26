@@ -24,6 +24,7 @@ type PriceUnit =
     | Un
     | Liter
     | Rolls
+    | Unknown
 
     static member toString =
         function
@@ -31,6 +32,7 @@ type PriceUnit =
         | Un -> "Un"
         | Liter -> "Liter"
         | Rolls -> "Rolls"
+        | Unknown -> "Unknown"
 
     static member ofString(value: string) =
         match value |> String.toLower with

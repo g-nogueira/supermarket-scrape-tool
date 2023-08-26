@@ -1,14 +1,13 @@
 module GNogueira.SupermarketScrapeTool.Service.ContinenteScrapper
 
 open System
-open System.Collections.Generic
-open System.Net
 open System.Net.Http
 open System.Text.RegularExpressions
+open GNogueira.SupermarketScrapeTool.Service.Models
 open HtmlAgilityPack
 open Fizzler.Systems.HtmlAgilityPack
 open FSharpPlus
-open Models
+open FsToolkit.ErrorHandling.OptionCE
 
 let pageStart = 0
 let pageSize = 999999
@@ -18,7 +17,7 @@ let supermarketUrl =
 
 let supermarketName = Continente
 let productSelector = "[data-pid].product"
-let nameSelector = ".pwc-tile--description"
+let nameSelectors = [".pwc-tile--description"; ".product-set-title .text-product-set"]
 let priceSelector = ".js-product-price .value"
 let priceSelectorAttr = "content"
 let priceUnitSelector = ".pwc-m-unit"
@@ -42,12 +41,16 @@ let getPriceUnit (product: HtmlNode) =
     let getGroup (id: int) (matchObj: Match) = matchObj.Groups[id].Value
     let toLower (text: string) = text.ToLower()
 
-    product.InnerText |> matchText "([a-zA-Z]+)" |> getGroup 1 |> toLower
+    product.InnerText |> matchText "([a-zA-Z]+)" |> getGroup 1 |> toLower |> PriceUnit.ofString
 
 let scrape () =
-    let getNode selector (node: HtmlNode) = node.QuerySelector(selector)
+    let querySelector (node: HtmlNode) =
+        node.QuerySelector >> Option.ofObj
 
-    let getName (node: HtmlNode) =
+    let getNode selectors (node: HtmlNode) =
+        selectors |> Seq.tryPick (querySelector node) 
+
+    let getProductName (node: HtmlNode) =
         node.InnerText |> String.trimWhiteSpaces
 
     let getPrice (node: HtmlNode) =
@@ -57,12 +60,19 @@ let scrape () =
         |> float
 
     let nodeToProduct (product: HtmlNode) =
-        { id = Guid.NewGuid()
-          Name = product |> getNode nameSelector |> getName
-          Price = product |> getNode priceSelector |> getPrice
-          PriceUnit = product |> getNode priceUnitSelector |> getPriceUnit |> PriceUnit.ofString
-          Source = supermarketName
-          Date = DateTime.Now.ToString("yyyy-MM-dd") }
+        option {
+            let! nameNode = product |> getNode nameSelectors
+            let! priceNode = product |> getNode [priceSelector]
+            let! priceUnitNode = product |> getNode [priceUnitSelector]
+
+            return
+                { id = Guid.NewGuid()
+                  Name = nameNode |> getProductName
+                  Price = priceNode |> getPrice
+                  PriceUnit = priceUnitNode |> getPriceUnit
+                  Source = supermarketName
+                  Date = DateTime.Now.ToString("yyyy-MM-dd") }
+        }
 
     let findProductNodes (doc: HtmlDocument) =
         doc.DocumentNode.QuerySelectorAll(productSelector)
@@ -77,3 +87,4 @@ let scrape () =
     |> stringToHtml
     |> findProductNodes
     |> Seq.map nodeToProduct
+    |> Seq.choose id
