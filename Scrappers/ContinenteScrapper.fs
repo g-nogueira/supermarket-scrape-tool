@@ -10,7 +10,7 @@ open FSharpPlus
 open FsToolkit.ErrorHandling.OptionCE
 
 let pageStart = 0
-let pageSize = 999999
+let pageSize = 10
 
 let supermarketUrl =
     $"https://www.continente.pt/on/demandware.store/Sites-continente-Site/default/Search-UpdateGrid?cgid=col-produtos&pmin=0%%2e01&start={pageStart}&sz={pageSize}"
@@ -21,6 +21,10 @@ let nameSelectors = [".pwc-tile--description"; ".product-set-title .text-product
 let priceSelector = ".js-product-price .value"
 let priceSelectorAttr = "content"
 let priceUnitSelector = ".pwc-m-unit"
+let imageSelector = "#product-set-img"
+let imageSelectorAttr = "data-src"
+let urlSelector = [".pwc-tile--description"; ".product-set-title .text-product-set"]
+let urlSelectorAttr = "href"
 
 let makeRequest (url: string) =
     async {
@@ -48,12 +52,22 @@ let scrape () =
         node.QuerySelector >> Option.ofObj
 
     let getNode selectors (node: HtmlNode) =
-        selectors |> Seq.tryPick (querySelector node) 
+        selectors |> Seq.tryPick (querySelector node)
+
+    let getProductImageUrl (node: HtmlNode) =
+        match imageSelectorAttr with
+        | "" -> node.InnerText.Trim().Replace(",", ".")
+        | attr -> node.GetAttributeValue(attr, "").Trim()
+
+    let getProductUrl (node: HtmlNode) =
+        match urlSelectorAttr with
+        | "" -> node.InnerText.Trim().Replace(",", ".")
+        | attr -> node.GetAttributeValue(attr, "").Trim()
 
     let getProductName (node: HtmlNode) =
         node.InnerText |> String.trimWhiteSpaces
 
-    let getPrice (node: HtmlNode) =
+    let getProductPrice (node: HtmlNode) =
         match priceSelectorAttr with
         | "" -> node.InnerText.Trim().Replace(",", ".")
         | attr -> node.GetAttributeValue(attr, "").Trim().Replace(",", ".")
@@ -64,14 +78,22 @@ let scrape () =
             let! nameNode = product |> getNode nameSelectors
             let! priceNode = product |> getNode [priceSelector]
             let! priceUnitNode = product |> getNode [priceUnitSelector]
+            let imageUrlNode = product |> getNode [imageSelector]
+            let urlNode = product |> getNode urlSelector
 
             return
                 { id = Guid.NewGuid()
                   Name = nameNode |> getProductName
-                  Price = priceNode |> getPrice
+                  Price = priceNode |> getProductPrice
                   PriceUnit = priceUnitNode |> getPriceUnit
                   Source = supermarketName
-                  Date = DateTime.Now.ToString("yyyy-MM-dd") }
+                  Date = DateTime.Now.ToString("yyyy-MM-dd")
+                  Url =
+                      urlNode
+                      |> Option.map getProductUrl
+                  ImageUrl =
+                      imageUrlNode
+                      |> Option.map getProductImageUrl }
         }
 
     let findProductNodes (doc: HtmlDocument) =

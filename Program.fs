@@ -1,5 +1,7 @@
 ﻿module GNogueira.SupermarketScrapeTool.Service.Main
 
+open GNogueira.SupermarketScrapeTool.Service.DTOs
+open GNogueira.SupermarketScrapeTool.Service.Models
 open Microsoft.Azure.Cosmos
 open Models
 open FSharpPlus
@@ -56,10 +58,8 @@ let initAzureConnection () =
 //let saveMethod = saveToDynamoDB table // Use saveToDynamoDB or saveToFile based on your choice
 //let saveItem = saveToFile "output.txt"
 let saveItem container item =
-    Logger.message $"Saving item {item.Name}"
-
     container
-    |> AsyncResult.bind (addItemsToContainer<Product> item)
+    |> AsyncResult.bind (addItemsToContainer<ProductDto> item)
     |> AsyncResult.teeError (fun e -> printfn $"{e.Message}")
 
 [<EntryPoint>]
@@ -70,11 +70,19 @@ let main argv =
     let scrape website =
         $"Scraping {website |> ProductSource.toString}:" |> Logger.message
 
-        scrapeWebsite website |> Seq.map (saveItem container)
+        scrapeWebsite website
+
+    let saveItem item =
+        $"Saving item {item.Name} from {item.Source |> ProductSource.toString}" |> Logger.message
+
+        item
+        |> Product.toDto
+        |> saveItem container
 
     websites
     |> Seq.map scrape
     |> Seq.collect id
+    |> Seq.map saveItem 
     |> Async.Parallel
     |> Async.map (teeError |> Array.map)
     |> Async.Ignore

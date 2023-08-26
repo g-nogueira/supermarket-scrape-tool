@@ -2,6 +2,7 @@
 
 open FSharpPlus
 open System
+open GNogueira.SupermarketScrapeTool.Service.DTOs
 
 type ProductSource =
     | PingoDoce
@@ -17,7 +18,6 @@ type ProductSource =
         | "pingo doce" -> PingoDoce
         | "continente" -> Continente
         | _ -> failwith $"Product Source not valid. Tried to parse {value}."
-
 
 type PriceUnit =
     | Kg
@@ -49,4 +49,16 @@ type Product =
       Name: string
       Price: float
       PriceUnit: PriceUnit
-      Source: ProductSource }
+      Source: ProductSource
+      Url: Option<string>
+      ImageUrl: Option<string> }
+    
+    static member toDto model =
+        { ProductDto.id = model.id
+          Date = model.Date
+          Name = model.Name
+          Price = model.Price
+          PriceUnit = model.PriceUnit |> PriceUnit.toString
+          Source = model.Source |> ProductSource.toString
+          Url = model.Url |> Option.defaultValue String.Empty
+          ImageUrl = model.ImageUrl |> Option.defaultValue String.Empty }

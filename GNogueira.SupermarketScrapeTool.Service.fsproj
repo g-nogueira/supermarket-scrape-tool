@@ -10,6 +10,7 @@
   <ItemGroup>
     <Compile Include="Logger.fs" />
     <Compile Include="SecretManager.fs" />
+    <Compile Include="DTOs\ProductDto.fs" />
     <Compile Include="Models\Product.fs" />
     <Compile Include="Scrappers\ContinenteScrapper.fs" />
     <Compile Include="Scrappers\PingoDoceScrapper.fs" />
