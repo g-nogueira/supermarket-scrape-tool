@@ -3,10 +3,11 @@ module GNogueira.SupermarketScrapeTool.Service.PingoDoceScrapper
 open System
 open System.Net.Http
 open Models
+open FSharpPlus
 
 let supermarketName = PingoDoce
 let pageStart = 0
-let pageSize = 999999
+let pageSize = 10000
 
 let supermarketUrl =
     $"https://mercadao.pt/api/catalogues/6107d28d72939a003ff6bf51/products/search?query=[]&from={pageStart}&size={pageSize}&esPreference=0.6774024649118144"
@@ -21,8 +22,7 @@ type SourceDTO =
       netContentUnit: string
       sku: string
       imagesNumber: int
-      slug: string
-    }
+      slug: string }
 
 type ProductDTO =
     { _index: string
@@ -48,11 +48,11 @@ type PingoDoceResponseDTO =
       categories: CategoryDTO list
       brands: BrandDTO list }
 
-type ProductDTO
-with
+type ProductDTO with
+
     static member mkImageUrl dto =
         $"https://res.cloudinary.com/fonte-online/image/upload/c_fill,h_300,q_auto,w_300/v1/PDO_PROD/{dto._source.sku}_{dto._source.imagesNumber}"
-    
+
     static member mkUrl dto =
         $"https://mercadao.pt/store/pingo-doce/product/{dto._source.slug}"
 
@@ -72,7 +72,6 @@ let makeRequest (url: string) =
 
         return content
     }
-    |> Async.RunSynchronously
 
 let scrape () =
     let deserialize =
@@ -94,6 +93,8 @@ let scrape () =
           Source = supermarketName
           Date = currentDate
           Url = product |> ProductDTO.mkUrl |> Some
-          ImageUrl = product |> ProductDTO.mkImageUrl |> Some  }
+          ImageUrl = product |> ProductDTO.mkImageUrl |> Some }
 
-    makeRequest supermarketUrl |> deserialize |> getProductDTOs |> Seq.map toProduct
+    supermarketUrl
+    |> makeRequest
+    |> Async.map (deserialize >> getProductDTOs >> Seq.map toProduct)

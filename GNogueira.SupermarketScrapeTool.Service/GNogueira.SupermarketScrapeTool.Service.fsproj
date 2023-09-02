@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
+    <AzureFunctionsVersion>v4</AzureFunctionsVersion>
     <RootNamespace>GNogueira.SupermarketScrapeTool.Service</RootNamespace>
     <UserSecretsId>31473dbb-448e-40f5-b220-f360ee2bdd80</UserSecretsId>
   </PropertyGroup>
@@ -14,6 +15,8 @@
     <Compile Include="Models\Product.fs" />
     <Compile Include="Scrappers\ContinenteScrapper.fs" />
     <Compile Include="Scrappers\PingoDoceScrapper.fs" />
+    <Compile Include="Start.fs" />
+    <Compile Include="Run.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
@@ -23,12 +26,23 @@
     <PackageReference Include="Chiron" Version="7.0.0-beta-180105" />
     <PackageReference Include="Fizzler.Systems.HtmlAgilityPack" Version="1.2.1" />
     <PackageReference Include="FSharpPlus" Version="1.4.1" />
-    <PackageReference Include="FsToolkit.ErrorHandling" Version="4.6.0" />
+    <PackageReference Include="FsToolkit.ErrorHandling" Version="4.9.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.33.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0-preview.3.23174.8" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0-preview.3.23174.8" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Update="FSharp.Core" Version="8.0.100-beta.23371.8" />
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="host.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="local.settings.json" Condition="Exists('local.settings.json')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
 </Project>

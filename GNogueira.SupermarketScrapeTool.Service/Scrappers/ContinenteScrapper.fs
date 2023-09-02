@@ -10,20 +10,26 @@ open FSharpPlus
 open FsToolkit.ErrorHandling.OptionCE
 
 let pageStart = 0
-let pageSize = 10
+let pageSize = 10000
 
 let supermarketUrl =
     $"https://www.continente.pt/on/demandware.store/Sites-continente-Site/default/Search-UpdateGrid?cgid=col-produtos&pmin=0%%2e01&start={pageStart}&sz={pageSize}"
 
-let supermarketName = Continente
+let supermarket = Continente
 let productSelector = "[data-pid].product"
-let nameSelectors = [".pwc-tile--description"; ".product-set-title .text-product-set"]
+
+let nameSelectors =
+    [ ".pwc-tile--description"; ".product-set-title .text-product-set" ]
+
 let priceSelector = ".js-product-price .value"
 let priceSelectorAttr = "content"
 let priceUnitSelector = ".pwc-m-unit"
 let imageSelector = "#product-set-img"
 let imageSelectorAttr = "data-src"
-let urlSelector = [".pwc-tile--description"; ".product-set-title .text-product-set"]
+
+let urlSelector =
+    [ ".pwc-tile--description"; ".product-set-title .text-product-set" ]
+
 let urlSelectorAttr = "href"
 
 let makeRequest (url: string) =
@@ -37,7 +43,6 @@ let makeRequest (url: string) =
 
         return content
     }
-    |> Async.RunSynchronously
 
 
 let getPriceUnit (product: HtmlNode) =
@@ -45,11 +50,14 @@ let getPriceUnit (product: HtmlNode) =
     let getGroup (id: int) (matchObj: Match) = matchObj.Groups[id].Value
     let toLower (text: string) = text.ToLower()
 
-    product.InnerText |> matchText "([a-zA-Z]+)" |> getGroup 1 |> toLower |> PriceUnit.ofString
+    product.InnerText
+    |> matchText "([a-zA-Z]+)"
+    |> getGroup 1
+    |> toLower
+    |> PriceUnit.ofString
 
 let scrape () =
-    let querySelector (node: HtmlNode) =
-        node.QuerySelector >> Option.ofObj
+    let querySelector (node: HtmlNode) = node.QuerySelector >> Option.ofObj
 
     let getNode selectors (node: HtmlNode) =
         selectors |> Seq.tryPick (querySelector node)
@@ -76,9 +84,9 @@ let scrape () =
     let nodeToProduct (product: HtmlNode) =
         option {
             let! nameNode = product |> getNode nameSelectors
-            let! priceNode = product |> getNode [priceSelector]
-            let! priceUnitNode = product |> getNode [priceUnitSelector]
-            let imageUrlNode = product |> getNode [imageSelector]
+            let! priceNode = product |> getNode [ priceSelector ]
+            let! priceUnitNode = product |> getNode [ priceUnitSelector ]
+            let imageUrlNode = product |> getNode [ imageSelector ]
             let urlNode = product |> getNode urlSelector
 
             return
@@ -86,14 +94,10 @@ let scrape () =
                   Name = nameNode |> getProductName
                   Price = priceNode |> getProductPrice
                   PriceUnit = priceUnitNode |> getPriceUnit
-                  Source = supermarketName
+                  Source = supermarket
                   Date = DateTime.Now.ToString("yyyy-MM-dd")
-                  Url =
-                      urlNode
-                      |> Option.map getProductUrl
-                  ImageUrl =
-                      imageUrlNode
-                      |> Option.map getProductImageUrl }
+                  Url = urlNode |> Option.map getProductUrl
+                  ImageUrl = imageUrlNode |> Option.map getProductImageUrl }
         }
 
     let findProductNodes (doc: HtmlDocument) =
@@ -106,7 +110,4 @@ let scrape () =
 
     supermarketUrl
     |> makeRequest
-    |> stringToHtml
-    |> findProductNodes
-    |> Seq.map nodeToProduct
-    |> Seq.choose id
+    |> Async.map (stringToHtml >> findProductNodes >> Seq.map nodeToProduct >> Seq.choose id)

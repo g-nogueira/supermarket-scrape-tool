@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "supermarket_scrape_tool": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7189",
+      "launchBrowser": false
+    }
+  }
+}
