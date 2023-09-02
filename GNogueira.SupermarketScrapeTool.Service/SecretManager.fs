@@ -1,4 +1,4 @@
-module GNogueira.SupermarketScrapeTool.Service.SecretManager
+namespace GNogueira.SupermarketScrapeTool.Service
 
 open System
 open FSharpPlus
@@ -8,36 +8,38 @@ open Microsoft.Azure.Cosmos
 open Azure.Identity
 open Azure.Security.KeyVault.Secrets
 
-let azureKeyVaultUrl = "https://smkt-scrape-tool-secrets.vault.azure.net/"
+type SecretManager(logger: ILogger) =
 
-let logMessage text =
-    Logger.message $"Azure KeyVault: {text}"
+    let azureKeyVaultUrl = "https://smkt-scrape-tool-secrets.vault.azure.net/"
 
-let secretClient = SecretClient(Uri azureKeyVaultUrl, DefaultAzureCredential())
+    let logMessage text =
+        logger.Information $"Azure KeyVault: {text}"
 
-let getSecretAsync s =
-    async {
-        logMessage $"Getting {s}"
+    let secretClient = SecretClient(Uri azureKeyVaultUrl, DefaultAzureCredential())
 
-        let! secretValue = secretClient.GetSecretAsync s |> Async.AwaitTask
+    let getSecretAsync s =
+        async {
+            logMessage $"Getting {s}"
 
-        return secretValue.Value.Value
-    }
+            let! secretValue = secretClient.GetSecretAsync s |> Async.AwaitTask
 
-let getCosmosDbConnectionString () =
-    getSecretAsync "CosmosDbConnectionString"
-    |> AsyncResult.ofAsync
-    |> AsyncResult.teeError Logger.exc
+            return secretValue.Value.Value
+        }
 
-let getCosmosDbName () =
-    getSecretAsync "CosmosDbName"
-    |> AsyncResult.ofAsync
-    |> AsyncResult.teeError Logger.exc
+    member _.GetCosmosDbConnectionString() =
+        getSecretAsync "CosmosDbConnectionString"
+        |> AsyncResult.ofAsync
+        |> AsyncResult.teeError (logger.Exception String.Empty)
 
-let getCosmosDbContainerName () =
-    getSecretAsync "CosmosDbContainerName"
-    |> AsyncResult.ofAsync
-    |> AsyncResult.teeError Logger.exc
+    member _.GetCosmosDbName() =
+        getSecretAsync "CosmosDbName"
+        |> AsyncResult.ofAsync
+        |> AsyncResult.teeError (logger.Exception String.Empty)
 
-let createCosmosClient (cosmosDbConnectionString: string) =
-    new CosmosClient(cosmosDbConnectionString)
+    member _.GetCosmosDbContainerName() =
+        getSecretAsync "CosmosDbContainerName"
+        |> AsyncResult.ofAsync
+        |> AsyncResult.teeError (logger.Exception String.Empty)
+
+    member _.CreateCosmosClient(cosmosDbConnectionString: string) =
+        new CosmosClient(cosmosDbConnectionString)

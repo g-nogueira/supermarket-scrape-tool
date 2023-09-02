@@ -6,7 +6,6 @@ open Microsoft.Azure.Cosmos
 open Models
 open FSharpPlus
 open FsToolkit.ErrorHandling
-open SecretManager
 open System
 
 [<AutoOpen>]
@@ -41,16 +40,20 @@ module Start =
 
     let websites = [ Continente; PingoDoce ]
 
-    let initAzureConnection () =
+    let initAzureConnection logger =
+        let secretManager = SecretManager logger
+
         let stopOnFail =
             function
             | Ok a -> a
             | Error e -> failwith $"Stopped run due to fail to get Azure Cosmos DB connection string.\n{Error}"
 
         let connectionString =
-            getCosmosDbConnectionString () |> Async.RunSynchronously |> stopOnFail
+            secretManager.GetCosmosDbConnectionString()
+            |> Async.RunSynchronously
+            |> stopOnFail
 
-        let dbName = getCosmosDbName () |> Async.RunSynchronously |> stopOnFail
+        let dbName = secretManager.GetCosmosDbName() |> Async.RunSynchronously |> stopOnFail
 
         connectionString
         |> createCosmosClient
@@ -65,34 +68,30 @@ module Start =
     let start (logger: ILogger) =
         asyncResult {
             let scrape website =
-                logger.Information $"Scraping {website |> ProductSource.toString}:" 
+                logger.Information $"Scraping {website |> ProductSource.toString}:"
 
                 scrapeWebsite website
 
             let saveItem container item =
-                logger.Information $"Saving item {item.Name} from {item.Source |> ProductSource.toString}" 
+                logger.Information $"Saving item {item.Name} from {item.Source |> ProductSource.toString}"
 
-                item
-                |> Product.toDto
-                |> saveItem container
+                item |> Product.toDto |> saveItem container
 
-            let! container = initAzureConnection ()
-            
+            let! container = initAzureConnection logger
+
             let! products =
                 websites
                 |> Seq.map scrape
                 |> Async.Parallel
                 |> Async.map (Seq.collect id)
                 |> Async.map Ok
-            
+
             let savedProducts =
                 products
-                |> Seq.map (saveItem container) 
+                |> Seq.map (saveItem container)
                 |> Async.Parallel
                 |> Async.map (Array.map (Result.teeError (logger.Exception String.Empty)))
-             
-            savedProducts   
-            |> Async.RunSynchronously
-            |> ignore
+
+            savedProducts |> Async.RunSynchronously |> ignore
         }
         |> AsyncResult.teeError (logger.Exception "Error running scrapper.")
