@@ -4,6 +4,7 @@ open System
 open System.Net.Http
 open Models
 open FSharpPlus
+open CurrentLogger
 
 let supermarketName = PingoDoce
 let pageStart = 0
@@ -85,6 +86,8 @@ let scrape () =
         let price = productData.unitPrice
         let priceUnit = productData.netContentUnit |> PriceUnit.ofString
         let currentDate = DateTime.Now.ToString("yyyy-MM-dd")
+
+        logger.Information $"Pingo Doce: found product \"{name}\"."
 
         { id = Guid.NewGuid()
           Name = name

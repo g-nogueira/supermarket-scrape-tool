@@ -29,6 +29,7 @@
     <PackageReference Include="FsToolkit.ErrorHandling" Version="4.9.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.33.0" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.CosmosDB" Version="4.3.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0-preview.3.23174.8" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0-preview.3.23174.8" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

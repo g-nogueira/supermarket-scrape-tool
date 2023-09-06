@@ -19,3 +19,6 @@ type ConsoleLogger () =
         member this.Information text = printfn $"{text}"
         member this.Error msg = printfn $"{msg}"
         member this.Exception  msg (exc : exn)  = printfn $"{exc}"
+
+module CurrentLogger =
+    let mutable logger : ILogger = ConsoleLogger ()

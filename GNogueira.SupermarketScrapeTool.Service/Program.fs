@@ -1,8 +1,13 @@
 ﻿module GNogueira.SupermarketScrapeTool.Service.Main
 
+open CurrentLogger
+
 [<EntryPoint>]
 let main argv =
-    start (ConsoleLogger())
+
+    logger <- ConsoleLogger ()
+
+    start ()
     |> ignore
 
     0

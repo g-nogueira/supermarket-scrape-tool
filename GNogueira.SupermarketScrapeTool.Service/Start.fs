@@ -7,6 +7,7 @@ open Models
 open FSharpPlus
 open FsToolkit.ErrorHandling
 open System
+open CurrentLogger
 
 [<AutoOpen>]
 module Start =
@@ -65,19 +66,12 @@ module Start =
         |> addItemsToContainer<ProductDto> item
         |> AsyncResult.teeError (fun e -> printfn $"{e.Message}")
 
-    let start (logger: ILogger) =
+    let scrapeProducts () =
         asyncResult {
             let scrape website =
                 logger.Information $"Scraping {website |> ProductSource.toString}:"
 
                 scrapeWebsite website
-
-            let saveItem container item =
-                logger.Information $"Saving item {item.Name} from {item.Source |> ProductSource.toString}"
-
-                item |> Product.toDto |> saveItem container
-
-            let! container = initAzureConnection logger
 
             let! products =
                 websites
@@ -86,12 +80,28 @@ module Start =
                 |> Async.map (Seq.collect id)
                 |> Async.map Ok
 
-            let savedProducts =
+            return 
                 products
-                |> Seq.map (saveItem container)
-                |> Async.Parallel
-                |> Async.map (Array.map (Result.teeError (logger.Exception String.Empty)))
+                |> Seq.map Product.toDto
+        }
+        |> AsyncResult.teeError (logger.Exception "Error running scrapper.")
+
+    let start () =
+        asyncResult {
+
+            let saveItems container (item : ProductDto) =
+                logger.Information $"Saving item {item.Name} from {item.Source}"
+
+                item |> saveItem container
+
+            let! container = initAzureConnection logger
+
+            let savedProducts =
+                scrapeProducts ()
+                |> AsyncResult.map (Seq.map (saveItems container))
+                |> AsyncResult.map Async.Parallel
+                |> AsyncResult.map (Async.map (Array.map (Result.teeError (logger.Exception String.Empty))))
 
             savedProducts |> Async.RunSynchronously |> ignore
         }
-        |> AsyncResult.teeError (logger.Exception "Error running scrapper.")
+        |> AsyncResult.teeError (logger.Exception "Error running scrapper.") 
