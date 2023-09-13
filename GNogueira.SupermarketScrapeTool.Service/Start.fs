@@ -69,7 +69,6 @@ module Start =
     let scrapeProducts () =
         asyncResult {
             let scrape website =
-                logger.Information $"Scraping {website |> ProductSource.toString}:"
 
                 scrapeWebsite website
 
@@ -80,28 +79,33 @@ module Start =
                 |> Async.map (Seq.collect id)
                 |> Async.map Ok
 
-            return 
-                products
-                |> Seq.map Product.toDto
+            return products |> Seq.map Product.toDto
         }
         |> AsyncResult.teeError (logger.Exception "Error running scrapper.")
 
     let start () =
         asyncResult {
 
-            let saveItems container (item : ProductDto) =
+            let saveItems container (item: ProductDto) =
                 logger.Information $"Saving item {item.Name} from {item.Source}"
 
                 item |> saveItem container
 
             let! container = initAzureConnection logger
 
+            let logSuccess (products: seq<ProductDto>) =
+                products
+                |> Seq.countBy (fun p -> p.Source)
+                |> Seq.iter (fun (source, count) ->
+                    logger.Information $"Successfully scraped websites. Got {count} products from {source}.")
+
             let savedProducts =
                 scrapeProducts ()
+                |> AsyncResult.tee logSuccess
                 |> AsyncResult.map (Seq.map (saveItems container))
                 |> AsyncResult.map Async.Parallel
                 |> AsyncResult.map (Async.map (Array.map (Result.teeError (logger.Exception String.Empty))))
 
             savedProducts |> Async.RunSynchronously |> ignore
         }
-        |> AsyncResult.teeError (logger.Exception "Error running scrapper.") 
+        |> AsyncResult.teeError (logger.Exception "Error running scrapper.")

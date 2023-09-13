@@ -22,17 +22,6 @@ module AzureFunction =
 
         logger.Information("F# HTTP trigger function processed a request.")
 
-        products.AddAsync
-            { ProductDto.id = Guid.Empty
-              Date = ""
-              Name = ""
-              Price = 0
-              PriceUnit = ""
-              Source = ""
-              Url = ""
-              ImageUrl = "" }
-        |> ignore
-
         scrapeProducts ()
         |> Async.RunSynchronously
         |> Result.teeError (logger.Exception "")
@@ -40,5 +29,3 @@ module AzureFunction =
         |> Seq.map (products.AddAsync >> Async.AwaitTask)
         |> (Async.Parallel >> Async.RunSynchronously)
         |> ignore
-        
-        products

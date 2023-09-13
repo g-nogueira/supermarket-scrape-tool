@@ -90,8 +90,6 @@ let scrape () =
             let imageUrlNode = product |> getNode [ imageSelector ]
             let urlNode = product |> getNode urlSelector
 
-            logger.Information $"Continente: found product \"{nameNode |> getProductName}\"."
-            
             return
                 { id = Guid.NewGuid()
                   Name = nameNode |> getProductName

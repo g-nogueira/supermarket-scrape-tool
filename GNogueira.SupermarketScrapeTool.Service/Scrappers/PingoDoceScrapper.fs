@@ -87,8 +87,6 @@ let scrape () =
         let priceUnit = productData.netContentUnit |> PriceUnit.ofString
         let currentDate = DateTime.Now.ToString("yyyy-MM-dd")
 
-        logger.Information $"Pingo Doce: found product \"{name}\"."
-
         { id = Guid.NewGuid()
           Name = name
           Price = price
