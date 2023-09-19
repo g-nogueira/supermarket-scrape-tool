@@ -1,15 +1,15 @@
 module GNogueira.SupermarketScrapeTool.API.App
 
 open System
+open GNogueira.SupermarketScrapeTool.API.Clients
 open GNogueira.SupermarketScrapeTool.API.Endpoints
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Cors.Infrastructure
 open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Hosting
-open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
-open GNogueira.SupermarketScrapeTool.API.HttpHandlers
+open Microsoft.Extensions.Logging
 
 // ---------------------------------
 // Web app
@@ -52,13 +52,20 @@ let configureApp (app : IApplicationBuilder) =
         .UseCors(configureCors)
         .UseGiraffe(webApp)
 
-let configureServices (services : IServiceCollection) =
-    services.AddCors()    |> ignore
-    services.AddGiraffe() |> ignore
-
 let configureLogging (builder : ILoggingBuilder) =
     builder.AddConsole()
            .AddDebug() |> ignore
+
+let configureServices (services : IServiceCollection) =
+    services.AddCors()    |> ignore
+    services.AddGiraffe() |> ignore
+    services.AddLogging() |> ignore
+
+    services.AddSingleton<ISecretManager, SecretManager>() |> ignore
+    services.AddSingleton<ICosmosDbClient, CosmosDbClient>() |> ignore
+    // services.AddSingleton<ILogger>(ConsoleLogger()) |> ignore
+    services.AddSingleton<IProductClient, ProductClient>() |> ignore
+
 
 [<EntryPoint>]
 let main args =
@@ -67,8 +74,8 @@ let main args =
             fun webHostBuilder ->
                 webHostBuilder
                     .Configure(Action<IApplicationBuilder> configureApp)
-                    .ConfigureServices(configureServices)
                     .ConfigureLogging(configureLogging)
+                    .ConfigureServices(configureServices)
                     |> ignore)
         .Build()
         .Run()
