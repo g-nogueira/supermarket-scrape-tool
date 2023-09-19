@@ -23,14 +23,6 @@ module Start =
     let addItemsToContainer<'T> item (container: ContainerResponse) =
         container.Container.CreateItemAsync<'T> item |> AsyncResult.ofTask
 
-    let saveToFile (filename: string) =
-        let saveItem (item) =
-            use writer = System.IO.File.AppendText(filename)
-            let json = Newtonsoft.Json.JsonConvert.SerializeObject(item)
-            writer.WriteLine(json)
-
-        saveItem
-
     let createCosmosClient (cosmosDbConnectionString: string) =
         new CosmosClient(cosmosDbConnectionString)
 
