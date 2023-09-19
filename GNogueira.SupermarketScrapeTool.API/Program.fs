@@ -1,8 +1,8 @@
 module GNogueira.SupermarketScrapeTool.API.App
 
 open System
-open GNogueira.SupermarketScrapeTool.API.Clients
 open GNogueira.SupermarketScrapeTool.API.Endpoints
+open GNogueira.SupermarketScrapeTool.Clients
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Cors.Infrastructure
 open Microsoft.AspNetCore.Hosting
@@ -17,7 +17,10 @@ open Microsoft.Extensions.Logging
 
 let webApp =
     choose [
-        subRoute "/api" RootController.routes
+        subRoute "/api"
+            (choose [
+                subRoute "/v1" (choose [ProductEndpoint.v1Endpoints])
+                subRoute "/v2" (choose [])])
         setStatusCode 404 >=> text "Not Found" ]
 
 // ---------------------------------
@@ -61,7 +64,7 @@ let configureServices (services : IServiceCollection) =
     services.AddGiraffe() |> ignore
     services.AddLogging() |> ignore
 
-    services.AddSingleton<ISecretManager, SecretManager>() |> ignore
+    services.AddSingleton<ISecretClient, SecretClient>() |> ignore
     services.AddSingleton<ICosmosDbClient, CosmosDbClient>() |> ignore
     // services.AddSingleton<ILogger>(ConsoleLogger()) |> ignore
     services.AddSingleton<IProductClient, ProductClient>() |> ignore

@@ -54,7 +54,7 @@ type Product =
       ImageUrl: Option<string> }
     
     static member toDto model =
-        { ProductDto.id = model.id
+        { ProductDto.Id = model.id
           Date = model.Date
           Name = model.Name
           Price = model.Price

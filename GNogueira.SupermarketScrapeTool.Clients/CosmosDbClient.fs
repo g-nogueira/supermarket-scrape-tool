@@ -1,4 +1,4 @@
-﻿namespace GNogueira.SupermarketScrapeTool.API
+﻿namespace GNogueira.SupermarketScrapeTool.Clients
 
 open FsToolkit.ErrorHandling
 open Microsoft.Azure.Cosmos
@@ -16,7 +16,7 @@ module CosmosDbInitializer =
     let createCosmosClient (cosmosDbConnectionString: string) =
         new CosmosClient(cosmosDbConnectionString)
 
-    let initAzureConnection (secretManager: ISecretManager) (logger: ILogger) =
+    let initAzureConnection (secretManager: ISecretClient) (logger: ILogger) =
 
         let stopOnFail =
             function
@@ -36,7 +36,7 @@ type ICosmosDbClient =
     abstract GetContainer: string -> Container
     abstract DefaultContainer: Container
 
-type CosmosDbClient(secretManager: ISecretManager, logger: ILogger<CosmosDbClient>) =
+type CosmosDbClient(secretManager: ISecretClient, logger: ILogger<CosmosDbClient>) =
 
     let dbName =
         secretManager.GetCosmosDbName()

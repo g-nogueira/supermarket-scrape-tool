@@ -1,4 +1,4 @@
-﻿namespace GNogueira.SupermarketScrapeTool.Service.DTOs
+﻿namespace GNogueira.SupermarketScrapeTool.Clients
 
 open System
 

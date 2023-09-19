@@ -1,8 +1,8 @@
-﻿namespace GNogueira.SupermarketScrapeTool.Service.DTOs
+﻿namespace GNogueira.SupermarketScrapeTool.API.DTOs
 
 open System
 
-type ProductDto =
+type ProductResponseDto =
     { Id: Guid
       Date: string
       Name: string

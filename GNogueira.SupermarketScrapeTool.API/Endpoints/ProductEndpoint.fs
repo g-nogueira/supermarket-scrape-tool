@@ -2,7 +2,8 @@
 
 open System
 open FsToolkit.ErrorHandling
-open GNogueira.SupermarketScrapeTool.API.Clients
+open GNogueira.SupermarketScrapeTool.API.DTOs
+open GNogueira.SupermarketScrapeTool.Clients
 open Giraffe
 open Microsoft.AspNetCore.Http
 
@@ -20,11 +21,11 @@ module ProductEndpoint =
             setBodyFromString e.Message |> ignore
             setStatusCode 404 next ctx
 
-    let getProductsPagedHandler (count: int, page: int) (next: HttpFunc) (ctx: HttpContext) =
+    let getProductsPagedHandler (request: PagedRequestDto) (next: HttpFunc) (ctx: HttpContext) =
         let productClient = ctx.GetService<IProductClient>()
 
         let product =
-            productClient.GetPaged count page
+            productClient.GetPaged request.ItemsPerPage request.Page
             |> Async.RunSynchronously
 
         match product with
@@ -33,8 +34,8 @@ module ProductEndpoint =
             setBodyFromString e.Message |> ignore
             setStatusCode 404 next ctx
 
-    let allEndpoints : HttpHandler =
+    let v1Endpoints : HttpHandler =
         choose [
             GET >=> routef "/products/%O" getProductByIdHandler
-            GET >=> routef "/products/paged/%i/%i" getProductsPagedHandler
+            GET >=> route "/products/" >=> bindQuery<PagedRequestDto> None getProductsPagedHandler
         ]

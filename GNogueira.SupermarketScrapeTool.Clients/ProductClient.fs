@@ -1,7 +1,6 @@
-﻿namespace GNogueira.SupermarketScrapeTool.API.Clients
+﻿namespace GNogueira.SupermarketScrapeTool.Clients
 
 open FsToolkit.ErrorHandling
-open GNogueira.SupermarketScrapeTool.API
 open Microsoft.Azure.Cosmos
 open Microsoft.Azure.Cosmos.Linq
 open System.Linq
@@ -23,10 +22,8 @@ type ProductClient(cosmosDbClient: ICosmosDbClient) =
         member this.GetPaged count page =
             async {
                 let queryable = productContainer.GetItemLinqQueryable<ProductDto>()
-
-                let matches = queryable.Skip(count * page).Take(count)
-
-                use linqFeed = matches.ToFeedIterator()
+                let matches = queryable.Skip(count * (page - 1)).Take(count)
+                let linqFeed = matches.ToFeedIterator()
 
                 let rec readResultsAsync acc =
                     async {
