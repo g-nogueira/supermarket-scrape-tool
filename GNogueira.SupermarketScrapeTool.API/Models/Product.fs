@@ -16,7 +16,7 @@ module ProductExtensions =
               Source = dto.Source |> ProductSource
               Url = dto.Url
               ImageUrl = dto.ImageUrl
-              Date = dto.Date |> DateTime.Parse }
+              Date = dto.Date }
 
         static member toDto(domain: Product) =
             { ProductResponseDto.Id = (domain.Id |> ProductId.deconstruct)

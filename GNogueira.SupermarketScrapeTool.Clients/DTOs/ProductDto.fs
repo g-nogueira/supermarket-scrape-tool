@@ -4,7 +4,7 @@ open System
 
 type ProductDto =
     { Id: Guid
-      Date: string
+      Date: DateTime
       Name: string
       Price: float
       PriceUnit: string
