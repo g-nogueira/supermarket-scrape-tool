@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="ProductDto.fs" />
+        <Compile Include="CompositionRoot.fs" />
+        <Compile Include="ProductPriceClientEx.fs" />
+        <Compile Include="Start.fs" />
+        <Compile Include="Run.fs" />
+        <Compile Include="Program.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Azure.Cosmos" Version="4.0.0-preview3" />
+      <PackageReference Include="Azure.Identity" Version="1.10.3" />
+      <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.5.0" />
+      <PackageReference Include="Chiron" Version="7.0.0-beta-180105" />
+      <PackageReference Include="FSharpPlus" Version="1.5.0" />
+      <PackageReference Include="FsToolkit.ErrorHandling" Version="4.10.0" />
+      <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.36.0" />
+      <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.39" />
+      <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.CosmosDB" Version="4.4.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0-rc.2.23479.6" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0-rc.2.23479.6" />
+      <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.2.0" />
+      <PackageReference Update="FSharp.Core" Version="8.0.100-beta.23475.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\GNogueira.SupermarketScrapeTool.Clients\GNogueira.SupermarketScrapeTool.Clients.fsproj" />
+      <ProjectReference Include="..\GNogueira.SupermarketScrapeTool.Models\GNogueira.SupermarketScrapeTool.Models.fsproj" />
+      <ProjectReference Include="..\GNogueira.SupermarketScrapeTool.Service\GNogueira.SupermarketScrapeTool.Service.fsproj" />
+    </ItemGroup>
+
+</Project>

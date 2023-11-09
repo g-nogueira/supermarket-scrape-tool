@@ -43,7 +43,7 @@ type PriceUnit =
         | "ro" -> Rolls
         | _ -> failwith $"Price Unit not valid. Tried to parse {value}."
 
-type Product =
+type ProductPrice =
     { id: Guid
       Date: string
       Name: string
@@ -54,7 +54,7 @@ type Product =
       ImageUrl: Option<string> }
     
     static member toDto model =
-        { ProductDto.Id = model.id
+        { ProductPriceDto.Id = model.id
           Date = model.Date
           Name = model.Name
           Price = model.Price

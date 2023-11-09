@@ -15,7 +15,7 @@ module AzureFunction =
     let run
         ([<TimerTrigger("0 0 7 * * *")>] timerInfo: TimerInfo)
         ([<CosmosDB("SupermarketItems", "Items", Connection = "CosmosDbConnectionString")>] products:
-            IAsyncCollector<ProductDto>)
+            IAsyncCollector<ProductPriceDto>)
         (log: ILogger)
         =
         logger <- AzureFunctionLogger log :> GNogueira.SupermarketScrapeTool.Service.ILogger

@@ -2,11 +2,11 @@
 
 open System
 
-type ProductId =
-    | ProductId of Guid
+type ProductPriceId =
+    | ProductPriceId of Guid
 
     static member deconstruct value =
-        let (ProductId id) = value
+        let (ProductPriceId id) = value
         id
 
 type PriceUnit =
@@ -23,8 +23,8 @@ type ProductSource =
         let (ProductSource ps) = value
         ps
 
-type Product =
-    { Id: ProductId
+type ProductPrice =
+    { Id: ProductPriceId
       Name: string
       Price: float
       PriceUnit: PriceUnit

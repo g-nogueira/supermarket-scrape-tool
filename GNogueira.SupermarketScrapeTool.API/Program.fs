@@ -3,6 +3,7 @@ module GNogueira.SupermarketScrapeTool.API.App
 open System
 open GNogueira.SupermarketScrapeTool.API.Endpoints
 open GNogueira.SupermarketScrapeTool.Clients
+open GNogueira.SupermarketScrapeTool.Common
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Cors.Infrastructure
 open Microsoft.AspNetCore.Hosting
@@ -67,8 +68,8 @@ let configureServices (services : IServiceCollection) =
 
     services.AddSingleton<ISecretClient, SecretClient>() |> ignore
     services.AddSingleton<ICosmosDbClient, CosmosDbClient>() |> ignore
-    // services.AddSingleton<ILogger>(ConsoleLogger()) |> ignore
-    services.AddSingleton<IProductClient, ProductClient>() |> ignore
+    services.AddSingleton<Logging.ILogger>(ConsoleLogger()) |> ignore
+    services.AddSingleton<IProductPriceClient, ProductPriceClient>() |> ignore
 
 
 [<EntryPoint>]

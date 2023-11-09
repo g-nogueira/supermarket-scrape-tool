@@ -2,7 +2,7 @@
 
 open System
 
-type ProductDto =
+type ProductPriceDto =
     { Id: Guid
       Date: string
       Name: string

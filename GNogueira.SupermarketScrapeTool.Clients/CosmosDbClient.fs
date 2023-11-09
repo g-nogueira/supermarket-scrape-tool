@@ -1,8 +1,8 @@
 ﻿namespace GNogueira.SupermarketScrapeTool.Clients
 
 open FsToolkit.ErrorHandling
+open GNogueira.SupermarketScrapeTool.Common.Logging
 open Microsoft.Azure.Cosmos
-open Microsoft.Extensions.Logging
 
 [<RequireQualifiedAccess>]
 module CosmosDbInitializer =
@@ -21,7 +21,7 @@ module CosmosDbInitializer =
         let stopOnFail =
             function
             | Ok a -> a
-            | Error e -> failwith $"Stopped run due to fail to get Azure Cosmos DB connection string.\n{Error}"
+            | Result.Error e -> failwith $"Stopped run due to fail to get Azure Cosmos DB connection string.\n{Error}"
 
         let connectionString =
             secretManager.GetCosmosDbConnectionString()
@@ -36,12 +36,12 @@ type ICosmosDbClient =
     abstract GetContainer: string -> Container
     abstract DefaultContainer: Container
 
-type CosmosDbClient(secretManager: ISecretClient, logger: ILogger<CosmosDbClient>) =
+type CosmosDbClient(secretManager: ISecretClient, logger: ILogger) =
 
     let dbName =
         secretManager.GetCosmosDbName()
         |> AsyncResult.teeError (fun (e: exn) ->
-            logger.LogError $"Error getting DB name from Secret Manager: {e.Message}")
+            logger.Log(Error $"Error getting DB name from Secret Manager: {e.Message}"))
         |> AsyncResult.defaultValue ""
         |> Async.RunSynchronously
 

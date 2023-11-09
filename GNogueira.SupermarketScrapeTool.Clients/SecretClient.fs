@@ -6,7 +6,7 @@ open FsToolkit.ErrorHandling
 open FsToolkit.ErrorHandling.Operator.AsyncResult
 open Azure.Identity
 open Azure.Security.KeyVault.Secrets
-open Microsoft.Extensions.Logging
+open GNogueira.SupermarketScrapeTool.Common.Logging
 
 type ISecretClient =
     abstract GetCosmosDbConnectionString: unit -> Async<Result<string, 'a>>
@@ -14,12 +14,12 @@ type ISecretClient =
     abstract GetCosmosDbContainerName: unit -> Async<Result<string, 'a>>
 
 type AzureSecretClient = SecretClient
-type SecretClient(logger: ILogger<SecretClient>) =
+type SecretClient(logger: ILogger) =
 
     let azureKeyVaultUrl = "https://smkt-scrape-tool-secrets.vault.azure.net/"
 
     let logMessage text =
-        logger.LogInformation $"Azure KeyVault: {text}"
+        logger.Log (Information $"Azure KeyVault: {text}")
 
     let secretClient = AzureSecretClient(Uri azureKeyVaultUrl, DefaultAzureCredential())
 
@@ -36,14 +36,14 @@ type SecretClient(logger: ILogger<SecretClient>) =
         member _.GetCosmosDbConnectionString() =
             getSecretAsync "CosmosDbConnectionString"
             |> AsyncResult.ofAsync
-            |> AsyncResult.teeError (fun ex -> logger.LogError "Error accessing Azure KeyVault.")
+            |> AsyncResult.teeError (fun ex -> logger.Log(Error "Error accessing Azure KeyVault."))
 
         member _.GetCosmosDbName() =
             getSecretAsync "CosmosDbName"
             |> AsyncResult.ofAsync
-            |> AsyncResult.teeError (fun ex -> logger.LogError "Error accessing Azure KeyVault.")
+            |> AsyncResult.teeError (fun ex -> logger.Log(Error "Error accessing Azure KeyVault."))
 
         member _.GetCosmosDbContainerName() =
             getSecretAsync "CosmosDbContainerName"
             |> AsyncResult.ofAsync
-            |> AsyncResult.teeError (fun ex -> logger.LogError "Error accessing Azure KeyVault.")
+            |> AsyncResult.teeError (fun ex -> logger.Log(Error "Error accessing Azure KeyVault."))

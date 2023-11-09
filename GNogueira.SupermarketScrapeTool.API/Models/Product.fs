@@ -7,9 +7,9 @@ open GNogueira.SupermarketScrapeTool.Models
 
 module ProductExtensions =
 
-    type Product with    
-        static member ofDto(dto: ProductDto) =
-            { Product.Id = dto.Id |> ProductId
+    type ProductPrice with    
+        static member ofDto(dto: ProductPriceDto) =
+            { ProductPrice.Id = dto.Id |> ProductPriceId
               Name = dto.Name
               Price = dto.Price
               PriceUnit = dto.PriceUnit |> PriceUnit
@@ -18,8 +18,8 @@ module ProductExtensions =
               ImageUrl = dto.ImageUrl
               Date = dto.Date }
 
-        static member toDto(domain: Product) =
-            { ProductResponseDto.Id = (domain.Id |> ProductId.deconstruct)
+        static member toDto(domain: ProductPrice) =
+            { ProductResponseDto.Id = (domain.Id |> ProductPriceId.deconstruct)
               Date = domain.Date |> string
               Name = domain.Name
               Price = domain.Price

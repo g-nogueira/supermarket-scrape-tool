@@ -55,7 +55,7 @@ module Start =
 
     let saveItem container item =
         container
-        |> addItemsToContainer<ProductDto> item
+        |> addItemsToContainer<ProductPriceDto> item
         |> AsyncResult.teeError (fun e -> printfn $"{e.Message}")
 
     let scrapeProducts () =
@@ -71,21 +71,21 @@ module Start =
                 |> Async.map (Seq.collect id)
                 |> Async.map Ok
 
-            return products |> Seq.map Product.toDto
+            return products |> Seq.map ProductPrice.toDto
         }
         |> AsyncResult.teeError (logger.Exception "Error running scrapper.")
 
     let start () =
         asyncResult {
 
-            let saveItems container (item: ProductDto) =
+            let saveItems container (item: ProductPriceDto) =
                 logger.Information $"Saving item {item.Name} from {item.Source}"
 
                 item |> saveItem container
 
             let! container = initAzureConnection logger
 
-            let logSuccess (products: seq<ProductDto>) =
+            let logSuccess (products: seq<ProductPriceDto>) =
                 products
                 |> Seq.countBy (fun p -> p.Source)
                 |> Seq.iter (fun (source, count) ->

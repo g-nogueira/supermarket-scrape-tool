@@ -13,6 +13,10 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "GNogueira.SupermarketScrape
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "GNogueira.SupermarketScrapeTool.Clients", "GNogueira.SupermarketScrapeTool.Clients\GNogueira.SupermarketScrapeTool.Clients.fsproj", "{338B808E-AE8C-4D00-9076-356BFB748728}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "GNogueira.SupermarketScrapeTool.Functions.ProductPopulator", "GNogueira.SupermarketScrapeTool.Functions.ProductPopulator\GNogueira.SupermarketScrapeTool.Functions.ProductPopulator.fsproj", "{21FBA7CC-D8BC-420C-A724-3683E6736A21}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "GNogueira.SupermarketScrapeTool.Common", "GNogueira.SupermarketScrapeTool.Common\GNogueira.SupermarketScrapeTool.Common.fsproj", "{ADB12296-6844-43FB-9BB3-7A88D062E62A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{338B808E-AE8C-4D00-9076-356BFB748728}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{338B808E-AE8C-4D00-9076-356BFB748728}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{338B808E-AE8C-4D00-9076-356BFB748728}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21FBA7CC-D8BC-420C-A724-3683E6736A21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21FBA7CC-D8BC-420C-A724-3683E6736A21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21FBA7CC-D8BC-420C-A724-3683E6736A21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21FBA7CC-D8BC-420C-A724-3683E6736A21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADB12296-6844-43FB-9BB3-7A88D062E62A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADB12296-6844-43FB-9BB3-7A88D062E62A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADB12296-6844-43FB-9BB3-7A88D062E62A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADB12296-6844-43FB-9BB3-7A88D062E62A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

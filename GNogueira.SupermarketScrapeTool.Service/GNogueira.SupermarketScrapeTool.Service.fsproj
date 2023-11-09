@@ -11,7 +11,7 @@
   <ItemGroup>
     <Compile Include="Logger.fs" />
     <Compile Include="SecretManager.fs" />
-    <Compile Include="DTOs\ProductDto.fs" />
+    <Compile Include="DTOs\ProductPriceDto.fs" />
     <Compile Include="Models\Product.fs" />
     <Compile Include="Scrappers\ContinenteScrapper.fs" />
     <Compile Include="Scrappers\PingoDoceScrapper.fs" />
@@ -22,20 +22,20 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Cosmos" Version="4.0.0-preview3" />
-    <PackageReference Include="Azure.Identity" Version="1.10.1" />
+    <PackageReference Include="Azure.Identity" Version="1.10.3" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.5.0" />
     <PackageReference Include="Chiron" Version="7.0.0-beta-180105" />
     <PackageReference Include="Fizzler.Systems.HtmlAgilityPack" Version="1.2.1" />
-    <PackageReference Include="FSharpPlus" Version="1.4.1" />
-    <PackageReference Include="FsToolkit.ErrorHandling" Version="4.9.0" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.53" />
-    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.35.4" />
-    <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.37" />
-    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.CosmosDB" Version="4.3.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0-rc.1.23419.4" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0-rc.1.23419.4" />
+    <PackageReference Include="FSharpPlus" Version="1.5.0" />
+    <PackageReference Include="FsToolkit.ErrorHandling" Version="4.10.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.54" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.36.0" />
+    <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.39" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.CosmosDB" Version="4.4.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0-rc.2.23479.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0-rc.2.23479.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Update="FSharp.Core" Version="8.0.100-beta.23418.2" />
+    <PackageReference Update="FSharp.Core" Version="8.0.100-beta.23475.2" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.2.0" />
   </ItemGroup>
 
