@@ -1,0 +1,26 @@
+source https://api.nuget.org/v3/index.json
+    
+nuget Azure.Cosmos
+nuget Azure.Identity
+nuget Azure.Security.KeyVault.Secrets
+nuget Chiron
+nuget coverlet.collector
+nuget Fizzler.Systems.HtmlAgilityPack
+nuget FSharp.Core
+nuget FSharp.Quotations.Evaluator
+nuget FSharpPlus
+nuget FsToolkit.ErrorHandling
+nuget Giraffe
+nuget HtmlAgilityPack
+nuget Microsoft.Azure.Cosmos
+nuget Microsoft.Azure.WebJobs
+nuget Microsoft.Azure.WebJobs.Extensions.CosmosDB
+nuget Microsoft.Extensions.Configuration
+nuget Microsoft.Extensions.Configuration.UserSecrets
+nuget Microsoft.Extensions.Logging
+nuget Microsoft.NET.Sdk.Functions
+nuget Microsoft.NET.Test.Sdk
+nuget Newtonsoft.Json
+nuget NUnit
+nuget NUnit.Analyzers
+nuget NUnit3TestAdapter

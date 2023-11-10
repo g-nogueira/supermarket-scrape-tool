@@ -1,0 +1,9 @@
+Azure.Identity
+Azure.Security.KeyVault.Secrets
+Chiron
+FSharpPlus
+FsToolkit.ErrorHandling
+Giraffe
+FSharp.Core
+Microsoft.Azure.Cosmos
+Newtonsoft.Json

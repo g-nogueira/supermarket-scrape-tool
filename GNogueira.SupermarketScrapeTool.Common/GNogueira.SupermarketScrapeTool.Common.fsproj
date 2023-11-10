@@ -1,27 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <TargetFrameworks>net7.0;net6.0</TargetFrameworks>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <Compile Include="FSharp.fs" />
-        <Compile Include="Helpers\CosmosDB.fs" />
-        <Compile Include="Logger.fs" />
-        <Compile Include="SecretManager.fs" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Azure.Cosmos" Version="4.0.0-preview3" />
-      <PackageReference Include="Azure.Identity" Version="1.10.3" />
-      <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.5.0" />
-      <PackageReference Include="FSharpPlus" Version="1.5.0" />
-      <PackageReference Include="FsToolkit.ErrorHandling" Version="4.10.0" />
-      <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.36.0" />
-      <PackageReference Update="FSharp.Core" Version="8.0.100-beta.23475.2" />
-      <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0-rc.2.23479.6" />
-      <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0-rc.2.23479.6" />
-    </ItemGroup>
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TargetFrameworks>net7.0;net6.0</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="FSharp.fs" />
+    <Compile Include="Helpers\CosmosDB.fs" />
+    <Compile Include="Logger.fs" />
+    <Compile Include="SecretManager.fs" />
+  </ItemGroup>
+  <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

@@ -1,0 +1,13 @@
+Azure.Cosmos
+Azure.Identity
+Azure.Security.KeyVault.Secrets
+Chiron
+FSharpPlus
+FsToolkit.ErrorHandling
+Microsoft.Azure.Cosmos
+Microsoft.Azure.WebJobs
+Microsoft.Azure.WebJobs.Extensions.CosmosDB
+Microsoft.Extensions.Configuration
+Microsoft.Extensions.Configuration.UserSecrets
+Microsoft.NET.Sdk.Functions
+FSharp.Core

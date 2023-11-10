@@ -1,18 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <TargetFrameworks>net7.0;net6.0</TargetFrameworks>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <Compile Include="ProductPrice.fs" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Update="FSharp.Core" Version="8.0.100-beta.23475.2" />
-      <PackageReference Include="FSharpPlus" Version="1.5.0" />
-      <PackageReference Include="FsToolkit.ErrorHandling" Version="4.10.0" />
-    </ItemGroup>
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TargetFrameworks>net7.0;net6.0</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="ProductPrice.fs" />
+  </ItemGroup>
+  <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>
