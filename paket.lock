@@ -3,7 +3,7 @@ NUGET
     Aether (8.3.1) - restriction: || (>= net452) (>= netstandard2.0)
       FSharp.Core (>= 4.3.4) - restriction: || (>= net45) (>= netstandard2.0)
       System.ValueTuple (>= 4.4) - restriction: >= net45
-    Azure.Core (1.35) - restriction: >= netstandard2.0
+    Azure.Core (1.36) - restriction: >= netstandard2.0
       Microsoft.Bcl.AsyncInterfaces (>= 1.1.1) - restriction: || (>= net461) (>= netstandard2.0)
       System.Diagnostics.DiagnosticSource (>= 4.6) - restriction: && (< net5.0) (>= netcoreapp2.1)
       System.Diagnostics.DiagnosticSource (>= 6.0.1) - restriction: || (>= net461) (>= net5.0) (&& (< netcoreapp2.1) (>= netstandard2.0))
@@ -60,9 +60,9 @@ NUGET
       FSharp.Core (>= 4.6.2) - restriction: >= net45
       FSharp.Core (>= 6.0.6) - restriction: || (&& (< net45) (>= netstandard2.0)) (>= netstandard2.1)
       System.ValueTuple (>= 4.4) - restriction: >= net45
-    FsToolkit.ErrorHandling (4.10)
-      FSharp.Core (>= 4.7.2) - restriction: && (>= netstandard2.0) (< netstandard2.1)
+    FsToolkit.ErrorHandling (4.11)
       FSharp.Core (>= 7.0.300) - restriction: >= netstandard2.1
+      FSharp.Core (>= 7.0.400) - restriction: && (>= netstandard2.0) (< netstandard2.1)
     Giraffe (6.2)
       FSharp.Core (>= 6.0) - restriction: >= net6.0
       Giraffe.ViewEngine (>= 1.4) - restriction: >= net6.0
@@ -199,7 +199,7 @@ NUGET
       System.Memory.Data (>= 1.0.1) - restriction: >= netstandard2.0
     Microsoft.Azure.WebJobs.Extensions (5.0) - restriction: >= net6.0
       Microsoft.Azure.WebJobs (>= 3.0.32) - restriction: >= netstandard2.0
-      ncrontab.signed (>= 3.3.2) - restriction: >= netstandard2.0
+      NCrontab.Signed (>= 3.3.2) - restriction: >= netstandard2.0
     Microsoft.Azure.WebJobs.Extensions.CosmosDB (4.4.1)
       Microsoft.Azure.Cosmos (>= 3.35.4) - restriction: >= netstandard2.0
       Microsoft.Azure.WebJobs (>= 3.0.37) - restriction: >= netstandard2.0
@@ -375,15 +375,15 @@ NUGET
       System.Memory (>= 4.5.5) - restriction: || (>= net462) (&& (< net6.0) (>= netstandard2.0))
       System.Runtime.CompilerServices.Unsafe (>= 6.0) - restriction: || (>= net462) (&& (>= net6.0) (< net7.0)) (&& (< net6.0) (>= netstandard2.0))
     Microsoft.Identity.Client (4.57) - restriction: >= netstandard2.0
-      Microsoft.CSharp (>= 4.5) - restriction: || (&& (< net45) (< netstandard2.0)) (&& (< net6.0) (>= xamarinios))
+      Microsoft.CSharp (>= 4.5) - restriction: && (< net6.0) (>= xamarinios)
       Microsoft.Identity.Client.NativeInterop (>= 0.13.12) - restriction: >= net6.0-windows7.0
-      Microsoft.IdentityModel.Abstractions (>= 6.22) - restriction: || (&& (>= monoandroid10.0) (< net6.0)) (&& (< monoandroid10.0) (>= monoandroid9.0) (< net6.0)) (&& (< monoandroid9.0) (< net45) (< net6.0) (>= netstandard2.0) (< xamarinios)) (&& (< monoandroid9.0) (>= net6.0) (< xamarinios)) (&& (>= net45) (< netstandard2.0)) (&& (< net45) (< netstandard2.0)) (>= net461) (&& (< net6.0) (>= xamarinios)) (>= net6.0-android) (>= net6.0-ios) (>= net6.0-windows7.0)
+      Microsoft.IdentityModel.Abstractions (>= 6.22) - restriction: || (&& (>= monoandroid10.0) (< net6.0)) (&& (< monoandroid10.0) (>= monoandroid9.0) (< net6.0)) (&& (< monoandroid9.0) (< net45) (< net6.0) (>= netstandard2.0) (< xamarinios)) (&& (< monoandroid9.0) (>= net6.0) (< xamarinios)) (&& (>= net45) (< netstandard2.0)) (>= net461) (&& (< net6.0) (>= xamarinios)) (>= net6.0-android) (>= net6.0-ios) (>= net6.0-windows7.0)
       Microsoft.Web.WebView2 (>= 1.0.864.35) - restriction: >= net6.0-windows7.0
       System.ComponentModel.TypeConverter (>= 4.3) - restriction: && (< net6.0) (>= xamarinios)
       System.Runtime.InteropServices.NFloat.Internal (>= 6.0.1) - restriction: >= net6.0-ios
-      System.Runtime.Serialization.Formatters (>= 4.3) - restriction: || (&& (< net45) (< netstandard2.0)) (&& (< net6.0) (>= xamarinios))
-      System.Runtime.Serialization.Primitives (>= 4.3) - restriction: || (&& (< net45) (< netstandard2.0)) (&& (< net6.0) (>= xamarinios))
-      System.Security.SecureString (>= 4.3) - restriction: || (&& (>= monoandroid10.0) (< net6.0)) (&& (< monoandroid10.0) (>= monoandroid9.0) (< net6.0)) (&& (< net45) (< netstandard2.0)) (&& (< net6.0) (>= xamarinios)) (>= net6.0-android) (>= net6.0-ios)
+      System.Runtime.Serialization.Formatters (>= 4.3) - restriction: && (< net6.0) (>= xamarinios)
+      System.Runtime.Serialization.Primitives (>= 4.3) - restriction: && (< net6.0) (>= xamarinios)
+      System.Security.SecureString (>= 4.3) - restriction: || (&& (>= monoandroid10.0) (< net6.0)) (&& (< monoandroid10.0) (>= monoandroid9.0) (< net6.0)) (&& (< net6.0) (>= xamarinios)) (>= net6.0-android) (>= net6.0-ios)
       System.Xml.XmlDocument (>= 4.3) - restriction: && (< net6.0) (>= xamarinios)
       Xamarin.Android.Support.CustomTabs (>= 28.0.0.3) - restriction: && (< monoandroid10.0) (>= monoandroid9.0) (< net6.0)
       Xamarin.AndroidX.Browser (>= 1.0) - restriction: && (>= monoandroid10.0) (< net6.0)
@@ -431,7 +431,7 @@ NUGET
       Newtonsoft.Json (>= 13.0.1) - restriction: >= netcoreapp3.1
     Microsoft.Web.WebView2 (1.0.2151.40) - restriction: >= net6.0-windows7.0
     Microsoft.Win32.SystemEvents (7.0) - restriction: >= net6.0
-    ncrontab.signed (3.3.3) - restriction: >= net6.0
+    NCrontab.Signed (3.3.3) - restriction: >= net6.0
     NETStandard.Library (2.0.3) - restriction: || (&& (< net20) (>= netstandard1.0) (< netstandard1.3)) (&& (< net35) (>= netstandard2.0)) (&& (< net40) (>= netstandard1.6) (< netstandard2.0) (< uap10.0)) (&& (>= netstandard1.3) (< netstandard2.0)) (>= uap10.1)
       Microsoft.NETCore.Platforms (>= 1.1) - restriction: || (&& (>= net45) (< netstandard1.3)) (&& (< net45) (>= netstandard1.1) (< netstandard1.2) (< win8)) (&& (< net45) (>= netstandard1.2) (< netstandard1.3) (< win8) (< wpa81)) (&& (< net45) (>= netstandard1.3) (< netstandard1.4) (< win8) (< wpa81)) (&& (< net45) (>= netstandard1.4) (< netstandard1.5) (< win8) (< wpa81)) (&& (< net45) (>= netstandard1.5) (< netstandard1.6) (< win8) (< wpa81)) (&& (< net45) (>= netstandard1.6) (< netstandard2.0) (< win8) (< wpa81)) (&& (< net45) (>= netstandard2.0)) (&& (>= net46) (< netstandard1.4)) (>= net461) (>= netcoreapp2.0) (&& (>= netstandard1.0) (< portable-net45+win8+wpa81)) (&& (< netstandard1.0) (>= portable-net45+win8) (< win8)) (&& (< netstandard1.0) (< portable-net45+win8) (>= portable-net45+win8+wpa81)) (&& (< netstandard1.0) (>= portable-net45+win8+wp8+wpa81) (< portable-net45+win8+wpa81)) (&& (< netstandard1.0) (>= win8)) (&& (< netstandard1.3) (< win8) (>= wpa81)) (&& (< netstandard1.5) (>= uap10.0)) (>= uap10.1) (>= wp8)
     Newtonsoft.Json (13.0.3)
@@ -877,8 +877,6 @@ NUGET
       Xamarin.AndroidX.ProfileInstaller.ProfileInstaller (>= 1.3.1.4) - restriction: >= monoandroid12.0
       Xamarin.Kotlin.StdLib (>= 1.9.10.2) - restriction: >= monoandroid12.0
     Xamarin.AndroidX.Migration (1.0.10) - restriction: && (>= monoandroid12.0) (< net6.0)
-      Xamarin.AndroidX.MultiDex (>= 2.0.1.13)
-    Xamarin.AndroidX.MultiDex (2.0.1.21) - restriction: && (>= monoandroid12.0) (< net6.0)
     Xamarin.AndroidX.ProfileInstaller.ProfileInstaller (1.3.1.4) - restriction: && (>= monoandroid12.0) (< net6.0)
       Xamarin.AndroidX.Annotation (>= 1.7.0.2) - restriction: >= monoandroid12.0
       Xamarin.AndroidX.Concurrent.Futures (>= 1.1.0.16) - restriction: >= monoandroid12.0
@@ -910,3 +908,28 @@ NUGET
       Xamarin.Jetbrains.Annotations (>= 24.0.1.5) - restriction: >= monoandroid12.0
       Xamarin.Kotlin.StdLib.Common (>= 1.9.10.2) - restriction: >= monoandroid12.0
       Xamarin.Kotlin.StdLib.Jdk8 (>= 1.9.10.2) - restriction: >= monoandroid12.0
+  remote: https://nuget.pkg.github.com/g-nogueira/index.json
+    GNogueira.SupermarketScrapeTool.Clients (1.0.0)
+      Azure.Identity
+      Azure.Security.KeyVault.Secrets
+      FSharp.Core
+      FSharp.Quotations.Evaluator
+      FSharpPlus
+      FsToolkit.ErrorHandling
+      GNogueira.SupermarketScrapeTool.Common
+      Microsoft.Azure.Cosmos
+      Microsoft.Extensions.Configuration
+    GNogueira.SupermarketScrapeTool.Common (1.0.0)
+      Azure.Cosmos
+      Azure.Identity
+      Azure.Security.KeyVault.Secrets
+      FSharp.Core
+      FSharpPlus
+      FsToolkit.ErrorHandling
+      Microsoft.Azure.Cosmos
+      Microsoft.Extensions.Configuration
+      Microsoft.Extensions.Logging
+    GNogueira.SupermarketScrapeTool.Models (1.0.4)
+      FSharp.Core
+      FSharpPlus
+      FsToolkit.ErrorHandling

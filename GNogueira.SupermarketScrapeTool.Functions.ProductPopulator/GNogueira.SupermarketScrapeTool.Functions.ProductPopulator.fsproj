@@ -11,11 +11,7 @@
     <Compile Include="Start.fs" />
     <Compile Include="Run.fs" />
     <Compile Include="Program.fs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GNogueira.SupermarketScrapeTool.Clients\GNogueira.SupermarketScrapeTool.Clients.fsproj" />
-    <ProjectReference Include="..\GNogueira.SupermarketScrapeTool.Models\GNogueira.SupermarketScrapeTool.Models.fsproj" />
-    <ProjectReference Include="..\GNogueira.SupermarketScrapeTool.Service\GNogueira.SupermarketScrapeTool.Service.fsproj" />
+    <Content Include="paket.references" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

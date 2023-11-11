@@ -7,3 +7,6 @@ Giraffe
 FSharp.Core
 Microsoft.Azure.Cosmos
 Newtonsoft.Json
+GNogueira.SupermarketScrapeTool.Models
+GNogueira.SupermarketScrapeTool.Common
+GNogueira.SupermarketScrapeTool.Clients

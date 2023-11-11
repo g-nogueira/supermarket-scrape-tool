@@ -5,6 +5,7 @@ VisualStudioVersion = 17.6.33706.43
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{2E1AA99B-3996-4E77-A4DB-7F8C482815C2}"
 	ProjectSection(SolutionItems) = preProject
+		paket.lock = paket.lock
 		paket.dependencies = paket.dependencies
 	EndProjectSection
 EndProject
@@ -21,6 +22,11 @@ EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "GNogueira.SupermarketScrapeTool.Functions.ProductPopulator", "GNogueira.SupermarketScrapeTool.Functions.ProductPopulator\GNogueira.SupermarketScrapeTool.Functions.ProductPopulator.fsproj", "{21FBA7CC-D8BC-420C-A724-3683E6736A21}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "GNogueira.SupermarketScrapeTool.Common", "GNogueira.SupermarketScrapeTool.Common\GNogueira.SupermarketScrapeTool.Common.fsproj", "{ADB12296-6844-43FB-9BB3-7A88D062E62A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solutionItems", "solutionItems", "{4C409187-ED08-4DCC-A061-A70B12654775}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,5 +68,7 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B1AF13B4-09E5-46B4-BEE2-EEC6150DEE6E}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 EndGlobal

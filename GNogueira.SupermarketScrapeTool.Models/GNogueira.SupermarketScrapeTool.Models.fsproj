@@ -1,11 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <Authors>Gustavo Nogueira</Authors>
+    <RepositoryUrl>https://github.com/g-nogueira/supermarket-scrape-tool.git</RepositoryUrl>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TargetFrameworks>net7.0;net6.0</TargetFrameworks>
+    <Version>1.0.4</Version>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ProductPrice.fs" />
+    <Content Include="paket.template" />
+    <Folder Include=".github\workflows\" />
+    <Content Include="paket.references" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>
