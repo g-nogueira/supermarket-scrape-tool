@@ -17,18 +17,19 @@ open Microsoft.Extensions.Logging
 // ---------------------------------
 
 let webApp =
-    choose [
-        subRoute "/api"
-            (choose [
-                subRoute "/v1" (choose [ProductEndpoint.v1Endpoints])
-                subRoute "/v2" (choose [])])
-        setStatusCode 404 >=> text "Not Found" ]
+    choose
+        [ subRoute
+              "/api"
+              (choose
+                  [ subRoute "/v1" (choose [ PriceEndpoint.v1Endpoints; ProductEndpoint.v1Endpoints ])
+                    subRoute "/v2" (choose []) ])
+          setStatusCode 404 >=> text "Not Found" ]
 
 // ---------------------------------
 // Error handler
 // ---------------------------------
 
-let errorHandler (ex : Exception) (logger : ILogger) =
+let errorHandler (ex: Exception) (logger: ILogger) =
     logger.LogError(ex, "An unhandled exception has occurred while executing the request.")
     clearResponse >=> setStatusCode 500 >=> text ex.Message
 
@@ -36,33 +37,27 @@ let errorHandler (ex : Exception) (logger : ILogger) =
 // Config and Main
 // ---------------------------------
 
-let configureCors (builder : CorsPolicyBuilder) =
+let configureCors (builder: CorsPolicyBuilder) =
     builder
-        .WithOrigins(
-            "http://localhost:5000",
-            "https://localhost:5001",
-            "http://127.0.0.1:5173")
-       .AllowAnyMethod()
-       .AllowAnyHeader()
-       |> ignore
+        .WithOrigins("http://localhost:5000", "https://localhost:5001", "http://127.0.0.1:5173")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+    |> ignore
 
-let configureApp (app : IApplicationBuilder) =
+let configureApp (app: IApplicationBuilder) =
     let env = app.ApplicationServices.GetService<IWebHostEnvironment>()
+
     (match env.IsDevelopment() with
-    | true  ->
-        app.UseDeveloperExceptionPage()
-    | false ->
-        app .UseGiraffeErrorHandler(errorHandler)
-            .UseHttpsRedirection())
+     | true -> app.UseDeveloperExceptionPage()
+     | false -> app.UseGiraffeErrorHandler(errorHandler).UseHttpsRedirection())
         .UseCors(configureCors)
         .UseGiraffe(webApp)
 
-let configureLogging (builder : ILoggingBuilder) =
-    builder.AddConsole()
-           .AddDebug() |> ignore
+let configureLogging (builder: ILoggingBuilder) =
+    builder.AddConsole().AddDebug() |> ignore
 
-let configureServices (services : IServiceCollection) =
-    services.AddCors()    |> ignore
+let configureServices (services: IServiceCollection) =
+    services.AddCors() |> ignore
     services.AddGiraffe() |> ignore
     services.AddLogging() |> ignore
 
@@ -70,18 +65,20 @@ let configureServices (services : IServiceCollection) =
     services.AddSingleton<ICosmosDbClient, CosmosDbClient>() |> ignore
     services.AddSingleton<Logging.ILogger>(ConsoleLogger()) |> ignore
     services.AddSingleton<IProductPriceClient, ProductPriceClient>() |> ignore
+    services.AddSingleton<IProductClient, ProductClient>() |> ignore
 
 
 [<EntryPoint>]
 let main args =
-    Host.CreateDefaultBuilder(args)
-        .ConfigureWebHostDefaults(
-            fun webHostBuilder ->
-                webHostBuilder
-                    .Configure(Action<IApplicationBuilder> configureApp)
-                    .ConfigureLogging(configureLogging)
-                    .ConfigureServices(configureServices)
-                    |> ignore)
+    Host
+        .CreateDefaultBuilder(args)
+        .ConfigureWebHostDefaults(fun webHostBuilder ->
+            webHostBuilder
+                .Configure(Action<IApplicationBuilder> configureApp)
+                .ConfigureLogging(configureLogging)
+                .ConfigureServices(configureServices)
+            |> ignore)
         .Build()
         .Run()
+
     0

@@ -3,13 +3,16 @@
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TargetFrameworks>net7.0;net6.0</TargetFrameworks>
+    <Version>1.1.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="FSharp.fs" />
     <Compile Include="DTOs\ProductPriceDto.fs" />
+    <Compile Include="DTOs\ProductDto.fs" />
     <Compile Include="SecretClient.fs" />
     <Compile Include="CosmosDbClient.fs" />
     <Compile Include="ProductPriceClient.fs" />
+    <Compile Include="ProductClient.fs" />
     <Content Include="paket.references" />
     <Content Include="paket.template" />
   </ItemGroup>

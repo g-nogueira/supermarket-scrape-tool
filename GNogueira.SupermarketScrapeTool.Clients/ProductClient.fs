@@ -14,39 +14,39 @@ open GNogueira.SupermarketScrapeTool.Common.FSharp.Queryable
 open Microsoft.FSharp.Quotations
 open Microsoft.FSharp.Linq.RuntimeHelpers.LeafExpressionConverter
 
-type IProductPriceClient =
-    abstract GetById: string -> Async<Result<ProductPriceDto, exn>>
-    abstract GetPaged: count: int -> page: int -> Async<Result<ProductPriceDto seq, exn>>
+type IProductClient =
+    abstract GetById: string -> Async<Result<ProductDto, exn>>
+    abstract GetPaged: count: int -> page: int -> Async<Result<ProductDto seq, exn>>
     abstract GetSources: unit -> Async<Result<string seq, exn>>
-    abstract Search: count: int -> page: int -> productName: Option<string> -> supermarket: Option<string> -> createdAfter: Option<DateTime> -> createdBefore: Option<DateTime> -> createdAt: Option<DateTime> -> sorting: Option<Sorting> -> Async<Result<ProductPriceDto seq, exn>>
+    abstract Search: count: int -> page: int -> productName: Option<string> -> supermarket: Option<string> -> updatedAfter: Option<DateTime> -> updatedBefore: Option<DateTime> -> updatedAt: Option<DateTime> -> sorting: Option<Sorting> -> Async<Result<ProductDto seq, exn>>
 
-type ProductPriceClient(cosmosDbClient: ICosmosDbClient) =
-    let priceContainer = cosmosDbClient.PricesContainer
+type ProductClient(cosmosDbClient: ICosmosDbClient) =
+    let productContainer = cosmosDbClient.ProductsContainer
 
-    interface IProductPriceClient with
+    interface IProductClient with
         member this.GetById id =
-            priceContainer.ReadItemAsync<ProductPriceDto>(id, PartitionKey id)
+            productContainer.ReadItemAsync<ProductDto>(id, PartitionKey id)
             |> AsyncResult.ofTask
             |> AsyncResult.map (fun ir -> ir.Resource)
 
         member this.GetPaged count page =
             async {
                 let linqFeed =
-                    priceContainer.GetItemLinqQueryable<ProductPriceDto>()
+                    productContainer.GetItemLinqQueryable<ProductDto>()
                     |> skip (count * (page - 1))
                     |> take count
                     |> toFeedIterator
 
-                let rec readResultsAsync acc =
+                let rec readResultsAsync (linqFeed: FeedIterator<_>) acc =
                     async {
                         if linqFeed.HasMoreResults then
                             let! response = linqFeed.ReadNextAsync() |> Async.AwaitTask
-                            return! acc @ (response.Resource |> Seq.toList) |> readResultsAsync
+                            return! acc @ (response.Resource |> Seq.toList) |> readResultsAsync linqFeed
                         else
                             return acc
                     }
 
-                let! result = readResultsAsync []
+                let! result = readResultsAsync linqFeed []
 
                 return! result |> List.toSeq |> Ok |> Async.retn
             }
@@ -56,45 +56,45 @@ type ProductPriceClient(cosmosDbClient: ICosmosDbClient) =
             (page: int)
             (productName: Option<string>)
             (supermarket: Option<string>)
-            (createdAfter: Option<DateTime>)
-            (createdBefore: Option<DateTime>)
-            (createdAt: Option<DateTime>)
+            (updatedAfter: Option<DateTime>)
+            (updatedBefore: Option<DateTime>)
+            (updatedAt: Option<DateTime>)
             (sorting: Option<Sorting>)
             =
             async {
 
-                let filterByName (productName: string option) (query: IQueryable<ProductPriceDto>) =
+                let filterByName (productName: string option) (query: IQueryable<ProductDto>) =
                     match productName with
                     | Some name -> query.Where(fun product -> product.Name.ToLower().Contains(name.ToLower()))
                     | None -> query
 
-                let filterBySupermarket (supermarket: string option) (query: IQueryable<ProductPriceDto>) =
+                let filterBySupermarket (supermarket: string option) (query: IQueryable<ProductDto>) =
                     match supermarket with
                     | Some market -> query.Where(fun product -> product.Source.ToLower().Contains(market.ToLower()))
                     | None -> query
 
-                let filterByDateRange (createdAfter: DateTime option) (createdBefore: DateTime option) (createdAt: DateTime option) (query: IQueryable<ProductPriceDto>) =
-                    let filterByCreatedAfter (q: IQueryable<ProductPriceDto>) =
-                         match createdAfter with
-                         | Some date -> q.Where(fun product -> product.Date >= date)
+                let filterByDateRange (updatedAfter: DateTime option) (updatedBefore: DateTime option) (updatedAt: DateTime option) (query: IQueryable<ProductDto>) =
+                    let filterByUpdatedAfter (q: IQueryable<ProductDto>) =
+                         match updatedAfter with
+                         | Some date -> q.Where(fun product -> product.updatedOn >= date)
                          | None -> q
-                    let filterByCreatedBefore (q: IQueryable<ProductPriceDto>) =
-                        match createdBefore with
-                        | Some date -> q.Where(fun product -> product.Date <= date)
+                    let filterByUpdatedBefore (q: IQueryable<ProductDto>) =
+                        match updatedBefore with
+                        | Some date -> q.Where(fun product -> product.updatedOn <= date)
                         | None -> q
-                    let filterByCreatedAt (q: IQueryable<ProductPriceDto>) =
-                        match createdAt with
-                        | Some date -> q.Where(fun product -> product.Date >= date && product.Date <= date)
+                    let filterByUpdatedAt (q: IQueryable<ProductDto>) =
+                        match updatedAt with
+                        | Some date -> q.Where(fun product -> product.updatedOn >= date && product.updatedOn <= date)
                         | None -> q
                     
-                    query |> filterByCreatedAfter |> filterByCreatedBefore |> filterByCreatedAt
+                    query |> filterByUpdatedAfter |> filterByUpdatedBefore |> filterByUpdatedAt
 
                 let linqFeed =
-                    priceContainer.GetItemLinqQueryable<ProductPriceDto>()
+                    productContainer.GetItemLinqQueryable<ProductDto>()
                     |> filterByName productName
                     |> filterBySupermarket supermarket
-                    |> filterByDateRange createdAfter createdBefore createdAt
-                    |> sort sorting <@ fun product -> product.Date @>
+                    |> filterByDateRange updatedAfter updatedBefore updatedAt
+                    |> sort sorting <@ fun product -> product.updatedOn @>
                     |> skip (count * (page - 1))
                     |> take count
                     |> toFeedIterator
@@ -115,7 +115,7 @@ type ProductPriceClient(cosmosDbClient: ICosmosDbClient) =
 
         member this.GetSources() =
             async {
-                let feedIterator = priceContainer.GetItemQueryIterator<{|Source: string|}>("SELECT DISTINCT c.Source FROM c")
+                let feedIterator = productContainer.GetItemQueryIterator<{|Source: string|}>("SELECT DISTINCT c.Source FROM c")
 
                 let rec readResultsAsync acc =
                     async {
