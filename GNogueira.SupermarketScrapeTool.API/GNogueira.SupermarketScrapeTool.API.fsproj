@@ -14,6 +14,7 @@
     <Compile Include="DTOs\ProductResponseDto.fs" />
     <Compile Include="DTOs\PagedRequestDto.fs" />
     <Compile Include="Models\Product.fs" />
+    <Compile Include="Endpoints\PriceEndpoint.fs" />
     <Compile Include="Endpoints\ProductEndpoint.fs" />
     <Compile Include="Program.fs" />
     <None Include="web.config">

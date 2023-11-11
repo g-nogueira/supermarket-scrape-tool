@@ -34,7 +34,8 @@ module CosmosDbInitializer =
 
 type ICosmosDbClient =
     abstract GetContainer: string -> Container
-    abstract DefaultContainer: Container
+    abstract PricesContainer: Container
+    abstract ProductsContainer: Container
 
 type CosmosDbClient(secretManager: ISecretClient, logger: ILogger) =
 
@@ -48,7 +49,8 @@ type CosmosDbClient(secretManager: ISecretClient, logger: ILogger) =
     let client = CosmosDbInitializer.initAzureConnection secretManager logger
 
     interface ICosmosDbClient with
-        member this.DefaultContainer = client.GetContainer(dbName, "Items")
+        member this.PricesContainer = client.GetContainer(dbName, "Items")
+        member this.ProductsContainer = client.GetContainer(dbName, "Products")
 
         member this.GetContainer containerName =
             client.GetContainer(dbName, containerName)

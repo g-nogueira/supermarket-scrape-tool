@@ -909,7 +909,7 @@ NUGET
       Xamarin.Kotlin.StdLib.Common (>= 1.9.10.2) - restriction: >= monoandroid12.0
       Xamarin.Kotlin.StdLib.Jdk8 (>= 1.9.10.2) - restriction: >= monoandroid12.0
   remote: https://nuget.pkg.github.com/g-nogueira/index.json
-    GNogueira.SupermarketScrapeTool.Clients (1.0.0)
+    GNogueira.SupermarketScrapeTool.Clients (1.1.0)
       Azure.Identity
       Azure.Security.KeyVault.Secrets
       FSharp.Core
