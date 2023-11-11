@@ -9,6 +9,7 @@
   <ItemGroup>
     <Compile Include="ProductEndpointTests.fs" />
     <Compile Include="Program.fs" />
+    <Content Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.AspNetCore.Hosting">

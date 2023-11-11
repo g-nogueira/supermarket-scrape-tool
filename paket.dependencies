@@ -1,6 +1,6 @@
 source https://api.nuget.org/v3/index.json
-    
-nuget Azure.Cosmos
+source https://nuget.pkg.github.com/g-nogueira/index.json
+
 nuget Azure.Identity
 nuget Azure.Security.KeyVault.Secrets
 nuget Chiron
@@ -24,3 +24,6 @@ nuget Newtonsoft.Json
 nuget NUnit
 nuget NUnit.Analyzers
 nuget NUnit3TestAdapter
+nuget GNogueira.SupermarketScrapeTool.Models
+nuget GNogueira.SupermarketScrapeTool.Common
+nuget GNogueira.SupermarketScrapeTool.Clients

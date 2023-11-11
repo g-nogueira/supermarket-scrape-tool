@@ -10,14 +10,13 @@
     <Compile Include="SecretClient.fs" />
     <Compile Include="CosmosDbClient.fs" />
     <Compile Include="ProductPriceClient.fs" />
+    <Content Include="paket.references" />
+    <Content Include="paket.template" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Extensions.Logging.Abstractions">
       <HintPath>..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\7.0.5\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GNogueira.SupermarketScrapeTool.Common\GNogueira.SupermarketScrapeTool.Common.fsproj" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

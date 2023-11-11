@@ -3,12 +3,17 @@
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TargetFrameworks>net7.0;net6.0</TargetFrameworks>
+    <Version>1.0.0</Version>
+    <Authors>Gustavo Nogueira</Authors>
+    <RepositoryUrl>https://github.com/g-nogueira/supermarket-scrape-tool.git</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="FSharp.fs" />
     <Compile Include="Helpers\CosmosDB.fs" />
     <Compile Include="Logger.fs" />
     <Compile Include="SecretManager.fs" />
+    <Content Include="paket.template" />
+    <Content Include="paket.references" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

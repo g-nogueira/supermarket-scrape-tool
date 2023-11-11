@@ -19,10 +19,7 @@
     <None Include="web.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GNogueira.SupermarketScrapeTool.Clients\GNogueira.SupermarketScrapeTool.Clients.fsproj" />
-    <ProjectReference Include="..\GNogueira.SupermarketScrapeTool.Models\GNogueira.SupermarketScrapeTool.Models.fsproj" />
+    <Content Include="paket.references" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

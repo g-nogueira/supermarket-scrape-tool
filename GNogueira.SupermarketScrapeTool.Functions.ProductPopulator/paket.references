@@ -1,4 +1,3 @@
-Azure.Cosmos
 Azure.Identity
 Azure.Security.KeyVault.Secrets
 Chiron
@@ -11,3 +10,6 @@ Microsoft.Extensions.Configuration
 Microsoft.Extensions.Configuration.UserSecrets
 Microsoft.NET.Sdk.Functions
 FSharp.Core
+GNogueira.SupermarketScrapeTool.Common
+GNogueira.SupermarketScrapeTool.Models
+GNogueira.SupermarketScrapeTool.Clients
