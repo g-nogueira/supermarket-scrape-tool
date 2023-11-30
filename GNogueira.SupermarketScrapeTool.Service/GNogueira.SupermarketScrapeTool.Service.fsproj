@@ -10,8 +10,9 @@
   <ItemGroup>
     <Compile Include="Logger.fs" />
     <Compile Include="SecretManager.fs" />
-    <Compile Include="DTOs\ProductPriceDto.fs" />
-    <Compile Include="Models\Product.fs" />
+    <Compile Include="CosmosDBHelper.fs" />
+    <Compile Include="Models\ProductDto.fs" />
+    <Compile Include="Models\ProductMappings.fs" />
     <Compile Include="Scrappers\ContinenteScrapper.fs" />
     <Compile Include="Scrappers\PingoDoceScrapper.fs" />
     <Compile Include="Start.fs" />
