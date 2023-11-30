@@ -1,6 +1,6 @@
 ﻿namespace GNogueira.SupermarketScrapeTool.Service
 
-open GNogueira.SupermarketScrapeTool.Service.DTOs
+open GNogueira.SupermarketScrapeTool.Models
 open GNogueira.SupermarketScrapeTool.Service.Models
 open Microsoft.Azure.Cosmos
 open Models
@@ -8,23 +8,15 @@ open FSharpPlus
 open FsToolkit.ErrorHandling
 open System
 open CurrentLogger
+open CosmosDBHelper
 
 [<AutoOpen>]
 module Start =
-    let azureContainerName = "Items"
+    [<Literal>]
+    let azureContainerName = "Products"
 
-    let createDatabase id (cosmosClient: CosmosClient) =
-        cosmosClient.CreateDatabaseIfNotExistsAsync id |> AsyncResult.ofTask
-
-    let createContainer (id: string) (database: DatabaseResponse) =
-        database.Database.CreateContainerIfNotExistsAsync(id, "/id")
-        |> AsyncResult.ofTask
-
-    let addItemsToContainer<'T> item (container: ContainerResponse) =
-        container.Container.CreateItemAsync<'T> item |> AsyncResult.ofTask
-
-    let createCosmosClient (cosmosDbConnectionString: string) =
-        new CosmosClient(cosmosDbConnectionString)
+    [<Literal>]
+    let azureContainerPartitionKey = "/productId"
 
     let scrapeWebsite =
         function
@@ -33,35 +25,14 @@ module Start =
 
     let websites = [ Continente; PingoDoce ]
 
-    let initAzureConnection logger =
-        let secretManager = SecretManager logger
-
-        let stopOnFail =
-            function
-            | Ok a -> a
-            | Error e -> failwith $"Stopped run due to fail to get Azure Cosmos DB connection string.\n{Error}"
-
-        let connectionString =
-            secretManager.GetCosmosDbConnectionString()
-            |> Async.RunSynchronously
-            |> stopOnFail
-
-        let dbName = secretManager.GetCosmosDbName() |> Async.RunSynchronously |> stopOnFail
-
-        connectionString
-        |> createCosmosClient
-        |> createDatabase dbName
-        |> AsyncResult.bind (createContainer azureContainerName)
-
     let saveItem container item =
         container
-        |> addItemsToContainer<ProductPriceDto> item
+        |> addItemsToContainer<ProductDto> item
         |> AsyncResult.teeError (fun e -> printfn $"{e.Message}")
 
     let scrapeProducts () =
         asyncResult {
             let scrape website =
-
                 scrapeWebsite website
 
             let! products =
@@ -71,21 +42,21 @@ module Start =
                 |> Async.map (Seq.collect id)
                 |> Async.map Ok
 
-            return products |> Seq.map ProductPrice.toDto
+            return products
         }
         |> AsyncResult.teeError (logger.Exception "Error running scrapper.")
 
     let start () =
         asyncResult {
 
-            let saveItems container (item: ProductPriceDto) =
+            let saveItems container (item: ProductDto) =
                 logger.Information $"Saving item {item.Name} from {item.Source}"
 
                 item |> saveItem container
 
-            let! container = initAzureConnection logger
+            let! container = initAzureConnection logger azureContainerName azureContainerPartitionKey
 
-            let logSuccess (products: seq<ProductPriceDto>) =
+            let logSuccess (products: seq<ProductDto>) =
                 products
                 |> Seq.countBy (fun p -> p.Source)
                 |> Seq.iter (fun (source, count) ->

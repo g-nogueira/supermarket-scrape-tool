@@ -3,7 +3,7 @@
 open System
 open FSharpPlus
 open FsToolkit.ErrorHandling
-open GNogueira.SupermarketScrapeTool.Service.DTOs
+open GNogueira.SupermarketScrapeTool.Service.Models
 open GNogueira.SupermarketScrapeTool.Service.Start
 open Microsoft.Azure.WebJobs
 open Microsoft.Extensions.Logging
@@ -15,7 +15,7 @@ module AzureFunction =
     let run
         ([<TimerTrigger("0 0 7 * * *")>] timerInfo: TimerInfo)
         ([<CosmosDB("SupermarketItems", "Items", Connection = "CosmosDbConnectionString")>] products:
-            IAsyncCollector<ProductPriceDto>)
+            IAsyncCollector<ProductDto>)
         (log: ILogger)
         =
         logger <- AzureFunctionLogger log :> GNogueira.SupermarketScrapeTool.Service.ILogger
