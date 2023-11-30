@@ -4,7 +4,9 @@ open System
 open System.Net.Http
 open Models
 open FSharpPlus
-open CurrentLogger
+open FSharp.Core
+open GNogueira.SupermarketScrapeTool.Models
+open GNogueira.SupermarketScrapeTool.Service.Models
 
 let supermarketName = PingoDoce
 let pageStart = 0
@@ -13,9 +15,27 @@ let pageSize = 10000
 let supermarketUrl =
     $"https://mercadao.pt/api/catalogues/6107d28d72939a003ff6bf51/products/search?query=[]&from={pageStart}&size={pageSize}&esPreference=0.6774024649118144"
 
+type PingoDoceResponse =
+    { sections: PingoDoceSections
+      categories: PingoDoceCategory list
+      brands: PingoDoceBrand list }
 
+and PingoDoceSections = { ``null``: SectionDTO }
 
-type SourceDTO =
+and SectionDTO =
+    { total: int
+      products: seq<PingoDoceProduct>
+      order: int
+      name: string option }
+
+and PingoDoceProduct =
+    { _index: string
+      _type: string
+      _id: string
+      _score: float
+      _source: PingoDoceSource }
+
+and PingoDoceSource =
     { firstName: string
       secondName: string
       thirdName: string
@@ -25,31 +45,11 @@ type SourceDTO =
       imagesNumber: int
       slug: string }
 
-type ProductDTO =
-    { _index: string
-      _type: string
-      _id: string
-      _score: float
-      _source: SourceDTO }
+and PingoDoceCategory = { id: string; name: string }
+and PingoDoceBrand = { id: string; name: string }
 
-type SectionDTO =
-    { total: int
-      products: seq<ProductDTO>
-      order: int
-      name: string option }
 
-type SectionsDTO = { ``null``: SectionDTO }
-
-type CategoryDTO = { id: string; name: string }
-
-type BrandDTO = { id: string; name: string }
-
-type PingoDoceResponseDTO =
-    { sections: SectionsDTO
-      categories: CategoryDTO list
-      brands: BrandDTO list }
-
-type ProductDTO with
+type PingoDoceProduct with
 
     static member mkImageUrl dto =
         $"https://res.cloudinary.com/fonte-online/image/upload/c_fill,h_300,q_auto,w_300/v1/PDO_PROD/{dto._source.sku}_{dto._source.imagesNumber}"
@@ -75,8 +75,7 @@ let makeRequest (url: string) =
     }
 
 let scrape () =
-    let deserialize =
-        Newtonsoft.Json.JsonConvert.DeserializeObject<PingoDoceResponseDTO>
+    let deserialize = Newtonsoft.Json.JsonConvert.DeserializeObject<PingoDoceResponse>
 
     let getProductDTOs data = data.sections.``null``.products
 
@@ -87,14 +86,15 @@ let scrape () =
         let priceUnit = productData.netContentUnit |> PriceUnit.ofString
         let currentDate = DateTime.Now.ToString("yyyy-MM-dd")
 
-        { id = Guid.NewGuid()
+        { ProductDto.id = Guid.NewGuid()
+          ExternalId = "" 
           Name = name
-          Price = price
-          PriceUnit = priceUnit
+          Prices = price
+          // PriceUnit = priceUnit
           Source = supermarketName
           Date = currentDate
-          Url = product |> ProductDTO.mkUrl |> Some
-          ImageUrl = product |> ProductDTO.mkImageUrl |> Some }
+          Url = product |> PingoDoceProduct.mkUrl |> Some
+          ImageUrl = product |> PingoDoceProduct.mkImageUrl |> Some }
 
     supermarketUrl
     |> makeRequest

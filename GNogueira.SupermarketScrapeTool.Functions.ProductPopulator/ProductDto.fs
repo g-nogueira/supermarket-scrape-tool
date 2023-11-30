@@ -9,7 +9,8 @@ type ProductDto =
       Source: string
       Url: string
       ImageUrl: string
-      updatedOn: DateTime }
+      updatedOn: DateTime
+      Price: float }
     
     static member fromProductPriceDto (productPriceDto: ProductPriceDto) =
         { id = Guid.NewGuid()
@@ -17,4 +18,5 @@ type ProductDto =
           Source = productPriceDto.Source
           Url = productPriceDto.Url
           ImageUrl = productPriceDto.ImageUrl
-          updatedOn = productPriceDto.Date }
+          updatedOn = productPriceDto.Date
+          Price = productPriceDto.Price }
