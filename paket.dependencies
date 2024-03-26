@@ -24,6 +24,6 @@ nuget Newtonsoft.Json
 nuget NUnit
 nuget NUnit.Analyzers
 nuget NUnit3TestAdapter
-nuget GNogueira.SupermarketScrapeTool.Models
+nuget GNogueira.SupermarketScrapeTool.Models == 2.0.0-beta3
 nuget GNogueira.SupermarketScrapeTool.Common
-nuget GNogueira.SupermarketScrapeTool.Clients
+nuget GNogueira.SupermarketScrapeTool.Clients == 2.0.0-beta1
