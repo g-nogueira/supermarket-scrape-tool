@@ -1,44 +1,76 @@
-﻿module GNogueira.SupermarketScrapeTool.Models
+﻿namespace GNogueira.SupermarketScrapeTool.Models
 
 open System
+open FSharpPlus
 
-type ProductSource =
-    | PingoDoce
-    | Continente
+[<AutoOpen>]
+module Product =
+    type SourceId = SourceId of Guid
 
+    type PriceUnit =
+        | Kg
+        | Un
+        | Liter
+        | Rolls
+        | Unknown
 
-type PriceUnit =
-    | Kg
-    | Un
-    | Liter
-    | Rolls
-    | Unknown
+    type SourceName =
+        | PingoDoce
+        | Continente
 
-type ProductPriceId =
-    | ProductPriceId of Guid
+    // The source most of the time will be a supermarket, but it could be a different type of store
+    type ProductSource =
+        { ExternalId: string
+          Name: SourceName
+          Url: string
+          ImageUrl: string option }
 
-    static member deconstruct value =
-        let (ProductPriceId id) = value
-        id
+    type PriceEntry =
+        { Date: DateTime
+          Price: float
+          PriceUnit: PriceUnit
+          Source: ProductSource }
 
-type ProductPrice =
-    { Date: DateTime
-      Price: float
-      PriceUnit: PriceUnit }
+    type ProductId = ProductId of Guid
+    type ProductExternalId = { ExternalId: string; Source: string }
 
-type ProductId =
-    | ProductId of Guid
+    type Product =
+        { Id: ProductId
+          Name: string
+          Brand: string
+          PriceHistory: PriceEntry seq
+          Sources: ProductSource seq
+          Ean: string option }
 
-    static member deconstruct value =
-        let (ProductId id) = value
-        id
+    type SourceName with
 
-type Product =
-    { Id: ProductId
-      ExternalId: string
-      Date: DateTime
-      Name: string
-      Prices: seq<ProductPrice>
-      Source: ProductSource
-      Url: Option<string>
-      ImageUrl: Option<string> }
+        static member toString =
+            function
+            | PingoDoce -> "pingodoce"
+            | Continente -> "continente"
+
+        static member ofString =
+            String.toLower
+            >> function
+                | "pingodoce" -> PingoDoce |> Ok
+                | "continente" -> Continente |> Ok
+                | value -> $"Product Source not valid. Tried to parse {value}." |> Error
+
+    type PriceUnit with
+
+        static member toString =
+            function
+            | Kg -> "kg"
+            | Un -> "un"
+            | Liter -> "liter"
+            | Rolls -> "rolls"
+            | Unknown -> "unknown"
+
+        static member ofString(value: string) =
+            match value |> String.toLower with
+            | "kg"
+            | "kgm" -> Kg |> Ok
+            | "un" -> Un |> Ok
+            | "ltr" -> Liter |> Ok
+            | "ro" -> Rolls |> Ok
+            | _ -> $"Price Unit not valid. Tried to parse {value}." |> Error

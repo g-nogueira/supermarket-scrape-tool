@@ -8,10 +8,12 @@
     <Version>1.0.4</Version>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Product.fs" />
     <Content Include="paket.template" />
     <Folder Include=".github\workflows\" />
     <Content Include="paket.references" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Product.fs" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>
