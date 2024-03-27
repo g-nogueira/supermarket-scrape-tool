@@ -5,7 +5,13 @@ open FSharpPlus
 
 [<AutoOpen>]
 module Product =
-    type SourceId = SourceId of Guid
+    type SourceId =
+        | SourceId of Guid
+
+        member _.Deconstruct id =
+            let (SourceId id) = id
+
+            id
 
     type PriceUnit =
         | Kg
@@ -31,7 +37,14 @@ module Product =
           PriceUnit: PriceUnit
           Source: ProductSource }
 
-    type ProductId = ProductId of Guid
+    type ProductId =
+        | ProductId of Guid
+
+        member _.Deconstruct id =
+            let (ProductId id) = id
+
+            id
+
     type ProductExternalId = { ExternalId: string; Source: string }
 
     type Product =
