@@ -1,10 +1,3 @@
-FSharp.Core
-Azure.Identity
-Azure.Security.KeyVault.Secrets
-FSharp.Quotations.Evaluator
-FSharpPlus
-FsToolkit.ErrorHandling
-Microsoft.Azure.Cosmos
-Microsoft.Extensions.Configuration
+group GNogueira.SupermarketScrapeTool.Clients
 GNogueira.SupermarketScrapeTool.Common
 GNogueira.SupermarketScrapeTool.Models

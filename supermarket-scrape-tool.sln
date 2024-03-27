@@ -5,8 +5,8 @@ VisualStudioVersion = 17.6.33706.43
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{2E1AA99B-3996-4E77-A4DB-7F8C482815C2}"
 	ProjectSection(SolutionItems) = preProject
-		paket.lock = paket.lock
 		paket.dependencies = paket.dependencies
+		paket.lock = paket.lock
 	EndProjectSection
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "GNogueira.SupermarketScrapeTool.Service", "GNogueira.SupermarketScrapeTool.Service\GNogueira.SupermarketScrapeTool.Service.fsproj", "{927C3BE7-4965-4887-9EED-8A76173771D0}"

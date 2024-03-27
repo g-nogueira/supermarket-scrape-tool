@@ -1,12 +1,4 @@
-Azure.Identity
-Azure.Security.KeyVault.Secrets
+group GNogueira.SupermarketScrapeTool.API
 Chiron
-FSharpPlus
-FsToolkit.ErrorHandling
 Giraffe
-FSharp.Core
-Microsoft.Azure.Cosmos
-Newtonsoft.Json
-GNogueira.SupermarketScrapeTool.Models
-GNogueira.SupermarketScrapeTool.Common
 GNogueira.SupermarketScrapeTool.Clients
