@@ -106,7 +106,7 @@ let scrape () =
                   ImageUrl = Some productImageUrl }
 
             return
-                { Product.ProductId = ProductId(Guid.NewGuid())
+                { Product.Id = ProductId(Guid.NewGuid())
                   Name = productName
                   PriceHistory =
                     { PriceEntry.Date = DateTime.Now

@@ -35,7 +35,7 @@ module Product =
     type ProductExternalId = { ExternalId: string; Source: string }
 
     type Product =
-        { ProductId: ProductId
+        { Id: ProductId
           Name: string
           Brand: string
           PriceHistory: PriceEntry seq
