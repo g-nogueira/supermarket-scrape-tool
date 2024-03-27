@@ -8,8 +8,8 @@ module Product =
     type SourceId =
         | SourceId of Guid
 
-        member _.Deconstruct id =
-            let (SourceId id) = id
+        member this.Deconstruct() =
+            let (SourceId id) = this
 
             id
 
@@ -40,8 +40,8 @@ module Product =
     type ProductId =
         | ProductId of Guid
 
-        member _.Deconstruct id =
-            let (ProductId id) = id
+        member this.Deconstruct() =
+            let (ProductId id) = this
 
             id
 
