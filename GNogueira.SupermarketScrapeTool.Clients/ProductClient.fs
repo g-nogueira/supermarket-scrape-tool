@@ -7,12 +7,13 @@ open FSharpPlus
 open Microsoft.Azure.Cosmos
 open Microsoft.FSharp.Control
 open FsToolkit.ErrorHandling
-open GNogueira.SupermarketScrapeTool.Common.FSharp.CosmosDB
-open GNogueira.SupermarketScrapeTool.Common.FSharp.Queryable
+open GNogueira.SupermarketScrapeTool.Common.CosmosDB
+open GNogueira.SupermarketScrapeTool.Common.Queryable
+open GNogueira.SupermarketScrapeTool.Common.FSharp
 open GNogueira.SupermarketScrapeTool.Models
 
 type IProductClient =
-    abstract GetById: string -> Async<Result<Product, exn>>
+    abstract GetById: ProductId -> Async<Result<Product, exn>>
     abstract GetPaged: count: int -> page: int -> Async<Result<Product seq, exn>>
     abstract GetAll: unit -> Async<Result<Product seq, exn>>
     abstract GetSources: unit -> Async<Result<string seq, exn>>
@@ -67,7 +68,9 @@ type ProductClient(cosmosDbClient: ICosmosDbClient) =
     
     interface IProductClient with
         member _.GetById id =
-            productContainer.ReadItemAsync<ProductDto>(id, PartitionKey id)
+            let productId = id |> deconstruct |> string
+
+            productContainer.ReadItemAsync<ProductDto>(productId, PartitionKey productId)
             |> AsyncResult.ofTask
             |> AsyncResult.map (fun itemResponse -> itemResponse.Resource)
             |> Async.map (Result.bind Product.ofDto)
