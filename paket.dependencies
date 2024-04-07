@@ -32,7 +32,7 @@ group GNogueira.SupermarketScrapeTool.Scrapper
 
     nuget Microsoft.Azure.WebJobs.Extensions.CosmosDB
     nuget Fizzler.Systems.HtmlAgilityPack
-    nuget GNogueira.SupermarketScrapeTool.Models == 2.0.0-beta9
+    nuget GNogueira.SupermarketScrapeTool.Models == 2.0.0-beta10
     nuget GNogueira.SupermarketScrapeTool.Clients == 2.0.0-beta5
     
 group GNogueira.SupermarketScrapeTool.Common

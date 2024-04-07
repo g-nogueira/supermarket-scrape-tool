@@ -2491,7 +2491,7 @@ NUGET
       FsToolkit.ErrorHandling
       Microsoft.Azure.Cosmos (>= 3.38 < 3.39)
       Microsoft.Extensions.Logging
-    GNogueira.SupermarketScrapeTool.Models (2.0.0-beta9)
+    GNogueira.SupermarketScrapeTool.Models (2.0.0-beta10)
       FSharpPlus
       FsToolkit.ErrorHandling (>= 4.15.1)
 
