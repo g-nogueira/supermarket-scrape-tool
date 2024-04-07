@@ -33,7 +33,7 @@ module Product =
           Source: ProductSource }
 
     type ProductId =
-        | ProductId of Guid
+        | ProductId of string
 
         member this.Deconstruct() =
             let (ProductId id) = this
@@ -46,7 +46,7 @@ module Product =
           Brand: string
           PriceHistory: PriceEntry seq
           Sources: ProductSource seq
-          Ean: string option }
+          Ean: string }
 
     type SourceName with
 
