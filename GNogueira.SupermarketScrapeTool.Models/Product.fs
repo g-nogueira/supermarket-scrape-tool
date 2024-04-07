@@ -5,14 +5,6 @@ open FSharpPlus
 
 [<AutoOpen>]
 module Product =
-    type SourceId =
-        | SourceId of Guid
-
-        member this.Deconstruct() =
-            let (SourceId id) = this
-
-            id
-
     type PriceUnit =
         | Kg
         | Un
@@ -48,8 +40,6 @@ module Product =
 
             id
 
-    type ProductExternalId = { ExternalId: string; Source: string }
-
     type Product =
         { Id: ProductId
           Name: string
@@ -71,6 +61,9 @@ module Product =
                 | "pingodoce" -> PingoDoce |> Ok
                 | "continente" -> Continente |> Ok
                 | value -> $"Product Source not valid. Tried to parse {value}." |> Error
+
+        member this.Deconstruct() =
+            this |> SourceName.toString
 
     type PriceUnit with
 
