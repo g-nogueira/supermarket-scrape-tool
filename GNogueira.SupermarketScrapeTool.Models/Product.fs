@@ -24,12 +24,15 @@ module Product =
         | PingoDoce
         | Continente
 
-    // The source most of the time will be a supermarket, but it could be a different type of store
+    /// The source most of the time will be a supermarket, but it could be a different type of store
+    /// For each specific supermarket, a product will have its own Id, Url, and Image
     type ProductSource =
-        { ExternalId: string
+        { /// The id used by the Source to identify the product.
+          ProductId: string
           Name: SourceName
-          Url: string
-          ImageUrl: string option }
+          ProductUrl: string
+          /// The image used by the Source to identify the product.
+          ProductImageUrl: string option }
 
     type PriceEntry =
         { Date: DateTime
