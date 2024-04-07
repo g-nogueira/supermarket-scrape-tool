@@ -83,3 +83,6 @@ module Product =
             | "ltr" -> Liter |> Ok
             | "ro" -> Rolls |> Ok
             | _ -> $"Price Unit not valid. Tried to parse {value}." |> Error
+
+        member this.Deconstruct() =
+            this |> PriceUnit.toString
