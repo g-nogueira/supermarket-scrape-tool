@@ -48,7 +48,7 @@ NUGET
     FParsec (1.1.1) - restriction: || (>= net452) (>= netstandard2.0)
       FSharp.Core (>= 4.3.4) - restriction: || (>= net45) (>= netstandard2.0)
       System.ValueTuple (>= 4.4) - restriction: >= net45
-    FSharp.Core (8.0.200)
+    FSharp.Core (8.0.200) - restriction: || (>= net45) (>= netstandard2.0)
     FSharpPlus (1.6.1)
       FSharp.Core (>= 4.6.2) - restriction: >= net45
       FSharp.Core (>= 6.0.6) - restriction: || (&& (< net45) (>= netstandard2.0)) (>= netstandard2.1)
@@ -276,20 +276,19 @@ NUGET
       Xamarin.Jetbrains.Annotations (>= 24.1.0.2) - restriction: >= monoandroid12.0
       Xamarin.Kotlin.StdLib (>= 1.9.22.1) - restriction: >= monoandroid12.0
   remote: https://nuget.pkg.github.com/g-nogueira/index.json
-    GNogueira.SupermarketScrapeTool.Clients (2.0.0-beta4)
-      GNogueira.SupermarketScrapeTool.Common (1.0.0-beta1)
-      GNogueira.SupermarketScrapeTool.Models (2.0.0-beta3)
-    GNogueira.SupermarketScrapeTool.Common (1.0.0-beta1)
+    GNogueira.SupermarketScrapeTool.Clients (2.0.0-beta5)
+      GNogueira.SupermarketScrapeTool.Common (2.0.0-beta5)
+      GNogueira.SupermarketScrapeTool.Models (2.0.0-beta5)
+    GNogueira.SupermarketScrapeTool.Common (2.0.0-beta5)
       Azure.Identity
       Azure.Security.KeyVault.Secrets
       FSharpPlus
       FsToolkit.ErrorHandling
       Microsoft.Azure.Cosmos (>= 3.38 < 3.39)
       Microsoft.Extensions.Logging
-    GNogueira.SupermarketScrapeTool.Models (2.0.0-beta3)
-      FSharp.Core
+    GNogueira.SupermarketScrapeTool.Models (2.0.0-beta6)
       FSharpPlus
-      FsToolkit.ErrorHandling
+      FsToolkit.ErrorHandling (>= 4.15.1)
 
 GROUP GNogueira.SupermarketScrapeTool.Clients
 NUGET
@@ -318,7 +317,7 @@ NUGET
       System.Memory (>= 4.5.4) - restriction: >= netstandard2.0
       System.Text.Json (>= 4.7.2) - restriction: >= netstandard2.0
       System.Threading.Tasks.Extensions (>= 4.5.4) - restriction: >= netstandard2.0
-    FSharp.Core (8.0.200)
+    FSharp.Core (8.0.200) - restriction: || (>= net45) (>= netstandard2.0)
     FSharpPlus (1.6.1)
       FSharp.Core (>= 4.6.2) - restriction: >= net45
       FSharp.Core (>= 6.0.6) - restriction: || (&& (< net45) (>= netstandard2.0)) (>= netstandard2.1)
@@ -544,17 +543,16 @@ NUGET
       Xamarin.Jetbrains.Annotations (>= 24.1.0.2) - restriction: >= monoandroid12.0
       Xamarin.Kotlin.StdLib (>= 1.9.22.1) - restriction: >= monoandroid12.0
   remote: https://nuget.pkg.github.com/g-nogueira/index.json
-    GNogueira.SupermarketScrapeTool.Common (1.0.0-beta1)
+    GNogueira.SupermarketScrapeTool.Common (2.0.0-beta5)
       Azure.Identity
       Azure.Security.KeyVault.Secrets
       FSharpPlus
       FsToolkit.ErrorHandling
       Microsoft.Azure.Cosmos (>= 3.38 < 3.39)
       Microsoft.Extensions.Logging
-    GNogueira.SupermarketScrapeTool.Models (2.0.0-beta3)
-      FSharp.Core
+    GNogueira.SupermarketScrapeTool.Models (2.0.0-beta6)
       FSharpPlus
-      FsToolkit.ErrorHandling
+      FsToolkit.ErrorHandling (>= 4.15.1)
 
 GROUP GNogueira.SupermarketScrapeTool.Common
 NUGET
@@ -828,7 +826,7 @@ NUGET
       System.Memory (>= 4.5.4) - restriction: >= netstandard2.0
       System.Text.Json (>= 4.7.2) - restriction: >= netstandard2.0
       System.Threading.Tasks.Extensions (>= 4.5.4) - restriction: >= netstandard2.0
-    FSharp.Core (8.0.200)
+    FSharp.Core (8.0.200) - restriction: || (>= net45) (>= netstandard2.0)
     FSharpPlus (1.6.1)
       FSharp.Core (>= 4.6.2) - restriction: >= net45
       FSharp.Core (>= 6.0.6) - restriction: || (&& (< net45) (>= netstandard2.0)) (>= netstandard2.1)
@@ -1263,20 +1261,19 @@ NUGET
       Xamarin.Jetbrains.Annotations (>= 24.1.0.2) - restriction: >= monoandroid12.0
       Xamarin.Kotlin.StdLib (>= 1.9.22.1) - restriction: >= monoandroid12.0
   remote: https://nuget.pkg.github.com/g-nogueira/index.json
-    GNogueira.SupermarketScrapeTool.Clients (2.0.0-beta4)
-      GNogueira.SupermarketScrapeTool.Common (1.0.0-beta1)
-      GNogueira.SupermarketScrapeTool.Models (2.0.0-beta3)
-    GNogueira.SupermarketScrapeTool.Common (1.0.0-beta1)
+    GNogueira.SupermarketScrapeTool.Clients (2.0.0-beta5)
+      GNogueira.SupermarketScrapeTool.Common (2.0.0-beta5)
+      GNogueira.SupermarketScrapeTool.Models (2.0.0-beta5)
+    GNogueira.SupermarketScrapeTool.Common (2.0.0-beta5)
       Azure.Identity
       Azure.Security.KeyVault.Secrets
       FSharpPlus
       FsToolkit.ErrorHandling
       Microsoft.Azure.Cosmos (>= 3.38 < 3.39)
       Microsoft.Extensions.Logging
-    GNogueira.SupermarketScrapeTool.Models (2.0.0-beta3)
-      FSharp.Core
+    GNogueira.SupermarketScrapeTool.Models (2.0.0-beta6)
       FSharpPlus
-      FsToolkit.ErrorHandling
+      FsToolkit.ErrorHandling (>= 4.15.1)
 
 GROUP GNogueira.SupermarketScrapeTool.Models
 NUGET
@@ -1531,7 +1528,7 @@ NUGET
       Xamarin.Jetbrains.Annotations (>= 24.1.0.2) - restriction: >= monoandroid12.0
       Xamarin.Kotlin.StdLib (>= 1.9.22.1) - restriction: >= monoandroid12.0
   remote: https://nuget.pkg.github.com/g-nogueira/index.json
-    GNogueira.SupermarketScrapeTool.Common (1.0.0-beta1)
+    GNogueira.SupermarketScrapeTool.Common (2.0.0-beta5)
       Azure.Identity
       Azure.Security.KeyVault.Secrets
       FSharpPlus
@@ -1573,7 +1570,7 @@ NUGET
       Fizzler (>= 1.2) - restriction: >= netstandard1.3
       HtmlAgilityPack (>= 1.5.1) - restriction: >= netstandard1.3
       NETStandard.Library (>= 1.6.1) - restriction: && (>= netstandard1.3) (< netstandard2.0)
-    FSharp.Core (8.0.200)
+    FSharp.Core (8.0.200) - restriction: || (>= net45) (>= netstandard2.0)
     FSharpPlus (1.6.1)
       FSharp.Core (>= 4.6.2) - restriction: >= net45
       FSharp.Core (>= 6.0.6) - restriction: || (&& (< net45) (>= netstandard2.0)) (>= netstandard2.1)
@@ -2484,20 +2481,19 @@ NUGET
       Xamarin.Jetbrains.Annotations (>= 24.1.0.2) - restriction: >= monoandroid12.0
       Xamarin.Kotlin.StdLib (>= 1.9.22.1) - restriction: >= monoandroid12.0
   remote: https://nuget.pkg.github.com/g-nogueira/index.json
-    GNogueira.SupermarketScrapeTool.Clients (2.0.0-beta4)
-      GNogueira.SupermarketScrapeTool.Common (1.0.0-beta1)
-      GNogueira.SupermarketScrapeTool.Models (2.0.0-beta3)
-    GNogueira.SupermarketScrapeTool.Common (1.0.0-beta1)
+    GNogueira.SupermarketScrapeTool.Clients (2.0.0-beta5)
+      GNogueira.SupermarketScrapeTool.Common (2.0.0-beta5)
+      GNogueira.SupermarketScrapeTool.Models (2.0.0-beta5)
+    GNogueira.SupermarketScrapeTool.Common (2.0.0-beta5)
       Azure.Identity
       Azure.Security.KeyVault.Secrets
       FSharpPlus
       FsToolkit.ErrorHandling
       Microsoft.Azure.Cosmos (>= 3.38 < 3.39)
       Microsoft.Extensions.Logging
-    GNogueira.SupermarketScrapeTool.Models (2.0.0-beta3)
-      FSharp.Core
+    GNogueira.SupermarketScrapeTool.Models (2.0.0-beta9)
       FSharpPlus
-      FsToolkit.ErrorHandling
+      FsToolkit.ErrorHandling (>= 4.15.1)
 
 GROUP GNogueira.SupermarketScrapeTool.Service
 NUGET
@@ -2533,7 +2529,7 @@ NUGET
       Fizzler (>= 1.2) - restriction: >= netstandard1.3
       HtmlAgilityPack (>= 1.5.1) - restriction: >= netstandard1.3
       NETStandard.Library (>= 1.6.1) - restriction: && (>= netstandard1.3) (< netstandard2.0)
-    FSharp.Core (8.0.200)
+    FSharp.Core (8.0.200) - restriction: || (>= net45) (>= netstandard2.0)
     FSharpPlus (1.6.1)
       FSharp.Core (>= 4.6.2) - restriction: >= net45
       FSharp.Core (>= 6.0.6) - restriction: || (&& (< net45) (>= netstandard2.0)) (>= netstandard2.1)
@@ -3432,20 +3428,19 @@ NUGET
       Xamarin.Jetbrains.Annotations (>= 24.1.0.2) - restriction: >= monoandroid12.0
       Xamarin.Kotlin.StdLib (>= 1.9.22.1) - restriction: >= monoandroid12.0
   remote: https://nuget.pkg.github.com/g-nogueira/index.json
-    GNogueira.SupermarketScrapeTool.Clients (2.0.0-beta4)
-      GNogueira.SupermarketScrapeTool.Common (1.0.0-beta1)
-      GNogueira.SupermarketScrapeTool.Models (2.0.0-beta3)
-    GNogueira.SupermarketScrapeTool.Common (1.0.0-beta1)
+    GNogueira.SupermarketScrapeTool.Clients (2.0.0-beta5)
+      GNogueira.SupermarketScrapeTool.Common (2.0.0-beta5)
+      GNogueira.SupermarketScrapeTool.Models (2.0.0-beta5)
+    GNogueira.SupermarketScrapeTool.Common (2.0.0-beta5)
       Azure.Identity
       Azure.Security.KeyVault.Secrets
       FSharpPlus
       FsToolkit.ErrorHandling
       Microsoft.Azure.Cosmos (>= 3.38 < 3.39)
       Microsoft.Extensions.Logging
-    GNogueira.SupermarketScrapeTool.Models (2.0.0-beta3)
-      FSharp.Core
+    GNogueira.SupermarketScrapeTool.Models (2.0.0-beta6)
       FSharpPlus
-      FsToolkit.ErrorHandling
+      FsToolkit.ErrorHandling (>= 4.15.1)
 
 GROUP GNogueira.SupermarketScrapeTool.Test
 NUGET

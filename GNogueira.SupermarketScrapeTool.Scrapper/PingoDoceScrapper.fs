@@ -100,23 +100,22 @@ let scrape () =
             let productEan = productDto.ean
 
             let productSource =
-                { ProductSource.ExternalId = productId
+                { ProductSource.ProductId = productId
                   Name = supermarket
-                  Url = productUrl
-                  ImageUrl = Some productImageUrl }
+                  ProductUrl = productUrl
+                  ProductImageUrl = Some productImageUrl }
 
             return
-                { Product.Id = ProductId(Guid.NewGuid())
+                { ScrappedProduct.Id = productEan |> ProductId
                   Name = productName
-                  PriceHistory =
+                  CurrentPrice =
                     { PriceEntry.Date = DateTime.Now
                       Price = productPrice
                       PriceUnit = priceUnit
                       Source = productSource }
-                    |> Seq.singleton
                   Brand = productBrand
-                  Sources = productSource |> Seq.singleton
-                  Ean = Some productEan }
+                  Source = productSource
+                  Ean = productEan }
         }
 
     supermarketUrl

@@ -6,11 +6,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="paket.references" />
-    <Compile Include="Common.fs" />
     <Compile Include="Logger.fs" />
     <Compile Include="CompositionRoot.fs" />
     <Compile Include="DTO\ProductDto.fs" />
-    <Compile Include="Models\Product.fs" />
+    <Compile Include="Models\ProductLens.fs"/>
+    <Compile Include="Models\ScrappedProduct.fs" />
     <Compile Include="ContinenteScrapper.fs" />
     <Compile Include="PingoDoceScrapper.fs" />
     <Compile Include="Scrapper.fs" />

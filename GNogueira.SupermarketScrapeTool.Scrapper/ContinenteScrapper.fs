@@ -12,6 +12,8 @@ open Fizzler.Systems.HtmlAgilityPack
 open CompositionRoot
 open GNogueira.SupermarketScrapeTool.Scrapper.Models
 open GNogueira.SupermarketScrapeTool.Common
+open GNogueira.SupermarketScrapeTool.Models
+
 
 let pageStart = 0
 let pageSize = 10000
@@ -144,23 +146,22 @@ let scrape () =
             let productImageUrl = product |> HtmlNode.getProductImageUrl |> Option.ofResult
 
             let productSource =
-                { ProductSource.ExternalId = productId
+                { ProductSource.ProductId = productId
                   Name = supermarket
-                  Url = productUrl
-                  ImageUrl = productImageUrl }
+                  ProductUrl = productUrl
+                  ProductImageUrl = productImageUrl }
 
             return
-                { Product.Id = ProductId(Guid.NewGuid())
+                { ScrappedProduct.Id = ean |> ProductId
                   Name = productName
-                  PriceHistory =
+                  CurrentPrice =
                     { PriceEntry.Date = DateTime.Now
                       Price = productPrice
                       PriceUnit = priceUnit
                       Source = productSource }
-                    |> Seq.singleton
                   Brand = productBrand
-                  Sources = productSource |> Seq.singleton
-                  Ean = failwith "Not Implemented" }
+                  Source = productSource
+                  Ean = ean }
         }
 
     supermarketUrl
