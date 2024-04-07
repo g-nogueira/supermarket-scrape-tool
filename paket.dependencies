@@ -18,7 +18,7 @@ group GNogueira.SupermarketScrapeTool.Clients
     source https://nuget.pkg.github.com/g-nogueira/index.json
 
     nuget GNogueira.SupermarketScrapeTool.Common == 2.0.0-beta5
-    nuget GNogueira.SupermarketScrapeTool.Models == 2.0.0-beta6
+    nuget GNogueira.SupermarketScrapeTool.Models == 2.0.0-beta10
 
 group GNogueira.SupermarketScrapeTool.Models
     source https://api.nuget.org/v3/index.json
