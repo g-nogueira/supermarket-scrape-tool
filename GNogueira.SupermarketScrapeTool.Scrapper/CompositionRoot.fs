@@ -10,4 +10,4 @@ module CompositionRoot =
     let secretManager = SecretManager logger
     let secretClient = SecretClient logger :> ISecretClient
     let cosmosDbClient = CosmosDbClient(secretClient, logger) :> ICosmosDbClient
-    let productPriceClient = ProductPriceClient cosmosDbClient :> IProductPriceClient
+    let productClient = ProductClient cosmosDbClient :> IProductClient

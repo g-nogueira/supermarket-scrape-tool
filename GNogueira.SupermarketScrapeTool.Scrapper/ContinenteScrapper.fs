@@ -81,8 +81,7 @@ module ProductExtractor =
 
         static member getProductId(product: HtmlNode) =
             product
-            |> HtmlNode.tryGet "[data-pid].product"
-            |> Option.bind (HtmlNode.tryGetAttributeValue "data-pid")
+            |> HtmlNode.tryGetAttributeValue "data-pid"
             |> Option.map String.trimWhiteSpaces
             |> Result.ofOption "Product id not found."
 
@@ -90,6 +89,7 @@ module ProductExtractor =
             product
             |> HtmlNode.tryGet ".pwc-m-unit"
             |> Option.bind (HtmlNode.innerText >> (Regex.tryMatch "([a-zA-Z]+)"))
+            |> Option.bind (Regex.tryGroup 1)
             |> Option.map String.toLower
             |> Result.ofOption "Price unit not found."
             |> Result.bind PriceUnit.ofString
@@ -106,6 +106,7 @@ module ProductExtractor =
             |> HtmlNode.tryQuerySelector ".nutriInfoTab .js-nutritional-tab-anchor"
             |> Option.bind (HtmlNode.tryGetAttributeValue "data-url")
             |> Option.bind (Regex.tryMatch "ean=([0-9]+)")
+            |> Option.bind (Regex.tryGroup 1)
             |> Result.ofOption "Ean not found."
 
 

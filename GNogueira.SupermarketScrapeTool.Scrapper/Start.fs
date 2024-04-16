@@ -1,11 +1,10 @@
 namespace GNogueira.SupermarketScrapeTool.Scrapper
 
-open Microsoft.Azure.Cosmos
 open FsToolkit.ErrorHandling
 open GNogueira.SupermarketScrapeTool.Common.Logging
 open GNogueira.SupermarketScrapeTool.Models
+open GNogueira.SupermarketScrapeTool.Models.Exceptions
 open GNogueira.SupermarketScrapeTool.Scrapper.CompositionRoot
-open GNogueira.SupermarketScrapeTool.Scrapper.AzureHelper
 open GNogueira.SupermarketScrapeTool.Scrapper.Models
 
 [<AutoOpen>]
@@ -17,38 +16,41 @@ module Start =
         let enrichSources (scrappedProduct: ScrappedProduct) (product: Product) =
             let isSameSource (source: ProductSource) (source': ProductSource) = source.Name = source'.Name
 
-            product.Sources
-            |> Seq.map (fun source ->
-                match scrappedProduct.Source |> isSameSource source with
-                | true -> scrappedProduct.Source
-                | false -> source)
+            match product.Sources |> Seq.toList with
+            | [] -> scrappedProduct.Source |> Seq.singleton
+            | _ ->
+                product.Sources
+                |> Seq.map (fun source ->
+                    match scrappedProduct.Source |> isSameSource source with
+                    | true -> scrappedProduct.Source
+                    | false -> source)
 
         let enrichPriceHistory (scrappedProduct: ScrappedProduct) (product: Product) =
             product.PriceHistory |> Seq.append [ scrappedProduct.CurrentPrice ]
 
+        let createProduct (scrappedProduct: ScrappedProduct) =
+            { Product.Id = scrappedProduct.Id
+              Name = scrappedProduct.Name
+              Brand = scrappedProduct.Brand
+              PriceHistory = [ scrappedProduct.CurrentPrice ]
+              Sources = [ scrappedProduct.Source ]
+              Ean = scrappedProduct.Ean }
+
         storageProduct
         |> AsyncResult.map (fun storageProduct ->
             storageProduct
+            |> Id.Set scrappedProduct.Id
             |> PriceHistory.Set(storageProduct |> enrichPriceHistory scrappedProduct)
             |> Sources.Set(storageProduct |> enrichSources scrappedProduct))
-
-    let upsertProduct (container: Container) (product: ProductDto) =
-        // logger.Log(LogMessage.Information $"Upserting Product '{source |> ProductSource.deconstruct}'.")
-
-        asyncResult {
-            let! response = container.UpsertItemAsync(product, PartitionKey(product.id))
-            return response
-        }
+        |> AsyncResult.orElseWith (fun e ->
+            match e with
+            | :? ProductNotFoundException  -> scrappedProduct |> createProduct |> AsyncResult.ok
+            | _ -> e |> AsyncResult.error)
 
     let start () =
         asyncResult {
-            let! container = initAzureConnection logger
-
             // Scrape products from sources
             let! scrappedProducts = scrapeProducts ()
-
-            // Fetch products from DB
-            let! products = productClient.GetAll()
 
             // Enrich the Products from DB with scrapped data
             let enrichedProducts =
@@ -60,13 +62,20 @@ module Start =
             // Upsert products to DB
             let! savedProducts =
                 enrichedProducts
-                |> AsyncResult.map (Seq.map ProductDto.ofDomain)
                 |> AsyncResult.bind (
-                    Seq.map (upsertProduct container)
+                    Seq.map productClient.Upsert
                     >> Async.Parallel
+                    >> Async.map (fun result ->
+                        result
+                        |> Seq.iter (
+                            Result.teeError (fun e -> logger.Log(Exception("Error running scrapper.", e)))
+                            >> ignore
+                        )
+
+                        result)
                     >> Async.map (List.ofArray >> List.sequenceResultM)
                 )
 
             return savedProducts
         }
-        |> AsyncResult.teeError (fun e -> logger.Log(LogMessage.Exception("Error running scrapper.", e)))
+        |> AsyncResult.teeError (fun e -> logger.Log(Exception("Error running scrapper.", e)))

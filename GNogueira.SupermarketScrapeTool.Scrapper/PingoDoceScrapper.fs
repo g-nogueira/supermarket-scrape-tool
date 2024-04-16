@@ -5,7 +5,7 @@ open System.Net.Http
 open FSharpPlus
 open FSharp.Core
 open GNogueira.SupermarketScrapeTool.Models
-open GNogueira.SupermarketScrapeTool.Common.Result
+open GNogueira.SupermarketScrapeTool.Common
 open GNogueira.SupermarketScrapeTool.Scrapper.Models
 
 let supermarket = PingoDoce
@@ -50,7 +50,7 @@ and PingoDoceSource =
       // Example: https://mercadao.pt/store/pingo-doce/product/vela-formato-4-papstar-1-un
       slug: string
       // The ean code is used to identify the product globally
-      ean: string
+      eans: string[]
       brand: Brand }
 
 and PingoDoceCategory = { id: string; name: string }
@@ -88,8 +88,10 @@ let scrape () =
     let getProductDTOs data = data.sections.``null``.products
 
     let toProduct product =
-        result {
+        Result.result {
             let productDto = product._source
+            let ean = productDto.eans |> head
+            
             let! priceUnit = productDto.netContentUnit |> PriceUnit.ofString
             let productName = productDto.firstName
             let productPrice = productDto.unitPrice
@@ -97,7 +99,7 @@ let scrape () =
             let productUrl = product |> PingoDoceProduct.mkUrl
             let productBrand = productDto.brand.name
             let productImageUrl = product |> PingoDoceProduct.mkImageUrl
-            let productEan = productDto.ean
+            let! productEan = ean |> Result.ofString $"Invalid EAN. Got {ean}."
 
             let productSource =
                 { ProductSource.ProductId = productId

@@ -5,6 +5,10 @@ open GNogueira.SupermarketScrapeTool.Models
 
 [<AutoOpen>]
 module Product =
+    let Id =
+        { Get = fun product -> product.Id
+          Set = fun value product -> { product with Id = value } }
+
     let Name =
         { Get = fun product -> product.Name
           Set = fun value product -> { product with Name = value } }
