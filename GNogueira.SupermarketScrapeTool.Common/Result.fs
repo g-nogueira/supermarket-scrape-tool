@@ -2,6 +2,7 @@
 
 open FSharp.Core
 open FSharpPlus
+open GNogueira.SupermarketScrapeTool.Common.String
 
 module Result =
     let ofOption error =
@@ -23,3 +24,8 @@ module Result =
             | Error e1, Error e2 -> Error(e1 + e2)
 
     let result = ResultBuilder()
+
+    let ofString string error =
+        match string with
+        | EmptyString _ -> Error error
+        | s -> Ok s
