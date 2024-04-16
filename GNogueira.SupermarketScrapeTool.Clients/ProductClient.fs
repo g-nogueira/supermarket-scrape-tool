@@ -2,8 +2,9 @@
 
 open System
 open System.Linq
+open System.Net
 open FSharp.Core
-open FSharpPlus
+open GNogueira.SupermarketScrapeTool.Models.Exceptions
 open Microsoft.Azure.Cosmos
 open Microsoft.FSharp.Control
 open FsToolkit.ErrorHandling
@@ -17,18 +18,32 @@ type IProductClient =
     abstract GetPaged: count: int -> page: int -> Async<Result<Product seq, exn>>
     abstract GetAll: unit -> Async<Result<Product seq, exn>>
     abstract GetSources: unit -> Async<Result<string seq, exn>>
-    abstract Search: count: int -> page: int -> productName: Option<string> -> supermarket: Option<string> -> updatedAfter: Option<DateTime> -> updatedBefore: Option<DateTime> -> updatedAt: Option<DateTime> -> sorting: Option<Sorting> -> Async<Result<Product seq, exn>>
+
+    abstract Search:
+        count: int ->
+        page: int ->
+        productName: Option<string> ->
+        supermarket: Option<string> ->
+        updatedAfter: Option<DateTime> ->
+        updatedBefore: Option<DateTime> ->
+        updatedAt: Option<DateTime> ->
+        sorting: Option<Sorting> ->
+            Async<Result<Product seq, exn>>
 
 type ProductClient(cosmosDbClient: ICosmosDbClient) =
     let productContainer = cosmosDbClient.ProductsContainer
-    
+
     interface IProductClient with
         member _.GetById id =
-            let productId = id |> deconstruct |> string
+            let productId = id |> deconstruct
 
-            productContainer.ReadItemAsync<ProductDto>(productId, PartitionKey productId)
+            productContainer.ReadItemAsync<ProductDto>(productId, PartitionKey(productId))
             |> AsyncResult.ofTask
-            |> AsyncResult.map (_.Resource)
+            |> AsyncResult.bind (fun response ->
+                match response.StatusCode with
+                | HttpStatusCode.NotFound ->
+                    "Product not found" |> ProductNotFoundException :> exn |> AsyncResult.error
+                | _ -> response.Resource |> AsyncResult.ok)
             |> Async.map (Result.bind ProductDto.toDomain)
 
         member _.GetPaged count page =
@@ -53,11 +68,9 @@ type ProductClient(cosmosDbClient: ICosmosDbClient) =
                 return result |> List.toSeq |> Seq.map ProductDto.toDomain |> Seq.sequenceResultM
             }
 
-        member _.GetAll () =
+        member _.GetAll() =
             async {
-                let linqFeed =
-                    productContainer.GetItemLinqQueryable<ProductDto>()
-                    |> toFeedIterator
+                let linqFeed = productContainer.GetItemLinqQueryable<ProductDto>() |> toFeedIterator
 
                 let rec readResultsAsync (linqFeed: FeedIterator<_>) acc =
                     async {
@@ -92,7 +105,9 @@ type ProductClient(cosmosDbClient: ICosmosDbClient) =
 
                 let filterBySupermarket (supermarket: string option) (query: IQueryable<ProductDto>) =
                     match supermarket with
-                    | Some market -> query.Where(fun product -> product.Sources.Any(fun source -> source.Name.ToLower().Contains(market.ToLower())))
+                    | Some market ->
+                        query.Where(fun product ->
+                            product.Sources.Any(fun source -> source.Name.ToLower().Contains(market.ToLower())))
                     | None -> query
 
                 // let filterByDateRange (updatedAfter: DateTime option) (updatedBefore: DateTime option) (updatedAt: DateTime option) (query: IQueryable<ProductDto>) =
@@ -108,7 +123,7 @@ type ProductClient(cosmosDbClient: ICosmosDbClient) =
                 //         match updatedAt with
                 //         | Some date -> q.Where(fun product -> product.UpdatedOn >= date && product.UpdatedOn <= date)
                 //         | None -> q
-                //     
+                //
                 //     query |> filterByUpdatedAfter |> filterByUpdatedBefore |> filterByUpdatedAt
 
                 let linqFeed =
@@ -120,7 +135,7 @@ type ProductClient(cosmosDbClient: ICosmosDbClient) =
                     |> skip (count * (page - 1))
                     |> take count
                     |> toFeedIterator
-                    
+
                 let rec readResultsAsync acc =
                     async {
                         if linqFeed.HasMoreResults then
@@ -137,7 +152,8 @@ type ProductClient(cosmosDbClient: ICosmosDbClient) =
 
         member _.GetSources() =
             async {
-                let feedIterator = productContainer.GetItemQueryIterator<{|Source: string|}>("SELECT DISTINCT c.Source FROM c")
+                let feedIterator =
+                    productContainer.GetItemQueryIterator<{| Source: string |}>("SELECT DISTINCT c.Source FROM c")
 
                 let rec readResultsAsync acc =
                     async {

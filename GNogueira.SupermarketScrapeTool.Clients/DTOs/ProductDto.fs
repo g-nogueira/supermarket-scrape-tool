@@ -4,6 +4,7 @@ open System
 open FsToolkit.ErrorHandling
 open GNogueira.SupermarketScrapeTool.Models
 
+[<CLIMutable>]
 type ProductSourceDto =
     {
         /// The id used by the Source to identify the product.
@@ -25,6 +26,7 @@ type ProductSourceDto =
                   ProductImageUrl = dto.ProductImageUrl }
         }
 
+[<CLIMutable>]
 type PriceEntryDto =
     { Date: DateTime
       Price: float
@@ -43,8 +45,10 @@ type PriceEntryDto =
                   Source = source }
         }
 
+[<CLIMutable>]
 type ProductDto =
     { id: string
+      status: string
       Name: string
       Brand: string
       PriceHistory: PriceEntryDto seq
