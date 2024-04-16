@@ -25,7 +25,7 @@ module Result =
 
     let result = ResultBuilder()
 
-    let ofString string error =
+    let ofString error string =
         match string with
         | EmptyString _ -> Error error
         | s -> Ok s
