@@ -11,6 +11,7 @@
     <Content Include="paket.template" />
     <Folder Include=".github\workflows\" />
     <Content Include="paket.references" />
+    <Compile Include="Exceptions.fs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Product.fs" />
