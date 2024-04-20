@@ -10,4 +10,9 @@ module Regex =
 
         match match'.Success with
         | false -> None
-        | true -> Some match'.Value
+        | true -> Some match'
+
+    let tryGroup (groupIndex: int) (match': Match) =
+        match match'.Groups.Count > groupIndex with
+        | false -> None
+        | true -> Some match'.Groups.[groupIndex].Value
