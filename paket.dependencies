@@ -18,7 +18,7 @@ group GNogueira.SupermarketScrapeTool.Clients
     source https://nuget.pkg.github.com/g-nogueira/index.json
 
     nuget GNogueira.SupermarketScrapeTool.Common == 2.0.0-beta5
-    nuget GNogueira.SupermarketScrapeTool.Models == 2.0.0-beta11
+    nuget GNogueira.SupermarketScrapeTool.Models == 2.0.0-beta12
 
 group GNogueira.SupermarketScrapeTool.Models
     source https://api.nuget.org/v3/index.json
@@ -32,9 +32,9 @@ group GNogueira.SupermarketScrapeTool.Scrapper
 
     nuget Microsoft.Azure.WebJobs.Extensions.CosmosDB
     nuget Fizzler.Systems.HtmlAgilityPack
-    nuget GNogueira.SupermarketScrapeTool.Models == 2.0.0-beta11
-    nuget GNogueira.SupermarketScrapeTool.Clients == 2.0.0-beta9
-    nuget GNogueira.SupermarketScrapeTool.Common == 2.0.0-beta8
+    nuget GNogueira.SupermarketScrapeTool.Models == 2.0.0-beta12
+    nuget GNogueira.SupermarketScrapeTool.Clients == 2.0.0-beta14
+    nuget GNogueira.SupermarketScrapeTool.Common == 2.0.0-beta9
     
 group GNogueira.SupermarketScrapeTool.Common
     source https://api.nuget.org/v3/index.json
