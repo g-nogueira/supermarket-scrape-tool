@@ -3,6 +3,9 @@
 open System
 open FsToolkit.ErrorHandling
 open GNogueira.SupermarketScrapeTool.Models
+open GNogueira.SupermarketScrapeTool.Common.FSharp
+open GNogueira.SupermarketScrapeTool.Common
+
 
 [<CLIMutable>]
 type ProductSourceDto =
@@ -12,7 +15,7 @@ type ProductSourceDto =
         Name: string
         ProductUrl: string
         /// The image used by the Source to identify the product.
-        ProductImageUrl: string option
+        ProductImageUrl: string
     }
 
     static member toDomain(dto: ProductSourceDto) =
@@ -23,8 +26,14 @@ type ProductSourceDto =
                 { ProductSource.ProductId = dto.ProductId
                   Name = sourceName
                   ProductUrl = dto.ProductUrl
-                  ProductImageUrl = dto.ProductImageUrl }
+                  ProductImageUrl = dto.ProductImageUrl |> Option.ofString }
         }
+
+    static member ofDomain(source: ProductSource) =
+        { ProductId = source.ProductId
+          Name = source.Name |> deconstruct
+          ProductUrl = source.ProductUrl
+          ProductImageUrl = source.ProductImageUrl |> Option.defaultValue ""}
 
 [<CLIMutable>]
 type PriceEntryDto =
@@ -44,6 +53,13 @@ type PriceEntryDto =
                   PriceUnit = priceUnit
                   Source = source }
         }
+
+    static member ofDomain(entry: PriceEntry) =
+        { Date = entry.Date
+          Price = entry.Price
+          PriceUnit = entry.PriceUnit |> deconstruct
+          Source = entry.Source |> ProductSourceDto.ofDomain }
+
 
 [<CLIMutable>]
 type ProductDto =
@@ -77,3 +93,12 @@ type ProductDto =
                   Sources = sources
                   Ean = dto.Ean }
         }
+
+    static member ofDomain(product: Product) =
+        { ProductDto.id = product.Id |> deconstruct
+          status = "ok"
+          Name = product.Name
+          Brand = product.Brand
+          PriceHistory = product.PriceHistory |> Seq.map PriceEntryDto.ofDomain
+          Sources = product.Sources |> Seq.map ProductSourceDto.ofDomain
+          Ean = product.Ean }

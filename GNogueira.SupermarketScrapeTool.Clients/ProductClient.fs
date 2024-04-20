@@ -18,6 +18,7 @@ type IProductClient =
     abstract GetPaged: count: int -> page: int -> Async<Result<Product seq, exn>>
     abstract GetAll: unit -> Async<Result<Product seq, exn>>
     abstract GetSources: unit -> Async<Result<string seq, exn>>
+    abstract Upsert: Product -> Async<Result<unit, exn>>
 
     abstract Search:
         count: int ->
@@ -39,11 +40,15 @@ type ProductClient(cosmosDbClient: ICosmosDbClient) =
 
             productContainer.ReadItemAsync<ProductDto>(productId, PartitionKey(productId))
             |> AsyncResult.ofTask
-            |> AsyncResult.bind (fun response ->
-                match response.StatusCode with
-                | HttpStatusCode.NotFound ->
-                    "Product not found" |> ProductNotFoundException :> exn |> AsyncResult.error
-                | _ -> response.Resource |> AsyncResult.ok)
+            |> AsyncResult.mapError (fun e ->
+                match e.InnerException with
+                | :? CosmosException as ex ->
+                    match ex.StatusCode with
+                    | HttpStatusCode.NotFound ->
+                        "Product not found" |> ProductNotFoundException :> exn
+                    | _ -> ex :> exn
+                | _ -> e)
+            |> AsyncResult.map (_.Resource)
             |> Async.map (Result.bind ProductDto.toDomain)
 
         member _.GetPaged count page =
@@ -168,3 +173,14 @@ type ProductClient(cosmosDbClient: ICosmosDbClient) =
 
                 return! result |> List.toSeq |> Seq.map (fun obj -> obj.Source) |> AsyncResult.retn
             }
+
+        member _.Upsert(product: Product) =
+            product
+            |> ProductDto.ofDomain
+            |> fun dto -> productContainer.UpsertItemAsync(dto, PartitionKey(dto.id))
+            |> AsyncResult.ofTask
+            |> AsyncResult.bind (fun response ->
+                match response.StatusCode with
+                | HttpStatusCode.OK
+                | HttpStatusCode.Created -> AsyncResult.ok ()
+                | _ -> "Failed to upsert product" |> exn |> AsyncResult.error)
