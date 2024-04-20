@@ -24,6 +24,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solutionItems", "solutionItems", "{4C409187-ED08-4DCC-A061-A70B12654775}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+		UploadPackage.ps1 = UploadPackage.ps1
 	EndProjectSection
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "GNogueira.SupermarketScrapeTool.Scrapper", "GNogueira.SupermarketScrapeTool.Scrapper\GNogueira.SupermarketScrapeTool.Scrapper.fsproj", "{FF6072F9-09BB-4D71-A836-FC80655391CF}"
