@@ -1,15 +1,4 @@
-Azure.Identity
-Azure.Security.KeyVault.Secrets
-Chiron
-FSharpPlus
-FsToolkit.ErrorHandling
-Microsoft.Azure.Cosmos
+group GNogueira.SupermarketScrapeTool.Functions.ProductPopulator
 Microsoft.Azure.WebJobs
-Microsoft.Azure.WebJobs.Extensions.CosmosDB
-Microsoft.Extensions.Configuration
-Microsoft.Extensions.Configuration.UserSecrets
-Microsoft.NET.Sdk.Functions
-FSharp.Core
-GNogueira.SupermarketScrapeTool.Common
 GNogueira.SupermarketScrapeTool.Models
 GNogueira.SupermarketScrapeTool.Clients

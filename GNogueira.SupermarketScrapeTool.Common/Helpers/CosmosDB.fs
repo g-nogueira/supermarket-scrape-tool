@@ -1,4 +1,4 @@
-﻿namespace GNogueira.SupermarketScrapeTool.Common.FSharp
+﻿namespace GNogueira.SupermarketScrapeTool.Common
 
 open System
 open System.Linq

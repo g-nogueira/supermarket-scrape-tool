@@ -1,0 +1,5 @@
+group GNogueira.SupermarketScrapeTool.Scrapper
+Microsoft.Azure.WebJobs.Extensions.CosmosDB
+Fizzler.Systems.HtmlAgilityPack
+GNogueira.SupermarketScrapeTool.Clients
+GNogueira.SupermarketScrapeTool.Common

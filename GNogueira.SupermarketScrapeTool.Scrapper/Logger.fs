@@ -1,4 +1,4 @@
-namespace GNogueira.SupermarketScrapeTool.Service
+namespace GNogueira.SupermarketScrapeTool.Scrapper
 
 open System
 open Microsoft.Extensions.Logging

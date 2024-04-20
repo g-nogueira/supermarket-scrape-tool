@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Logger.fs" />
+    <Compile Include="CompositionRoot.fs" />
+    <Folder Include="DTO\" />
+    <Compile Include="Models\ProductLens.fs"/>
+    <Compile Include="Models\ScrappedProduct.fs" />
+    <Compile Include="Models\ProductDto.fs" />
+    <Compile Include="ContinenteScrapper.fs" />
+    <Compile Include="PingoDoceScrapper.fs" />
+    <Compile Include="Scrapper.fs" />
+    <Compile Include="AzureHelper.fs" />
+    <Compile Include="Start.fs" />
+    <Compile Include="Program.fs" />
+    <Content Include="paket.references" />
+  </ItemGroup>
+  <Import Project="..\.paket\Paket.Restore.targets" />
+</Project>

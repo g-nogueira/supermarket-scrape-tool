@@ -1,13 +1,10 @@
-﻿namespace GNogueira.SupermarketScrapeTool.Functions.ProductPopulator
+namespace GNogueira.SupermarketScrapeTool.Scrapper
 
-open System
 open FSharpPlus
 open FsToolkit.ErrorHandling
 open GNogueira.SupermarketScrapeTool.Clients
-open GNogueira.SupermarketScrapeTool.Common.Logging
 open GNogueira.SupermarketScrapeTool.Models
 open GNogueira.SupermarketScrapeTool.Common.Extensions.FSharp
-open Microsoft.Azure.Cosmos
 
 module ProductPriceClientEx =
     let fetchProductsFromSource (productPriceClient: IProductPriceClient) (source: string) =
@@ -68,5 +65,5 @@ module ProductPriceClientEx =
         |> AsyncResult.map (enrichWithProducts productPriceClient)
 
     type ProductPriceClient with
-        static member GenerateProducts productPriceClient =
+        static member FetchProducts productPriceClient =
             readAllFromContainer productPriceClient

@@ -8,12 +8,18 @@
     <RepositoryUrl>https://github.com/g-nogueira/supermarket-scrape-tool.git</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="FSharp.fs" />
-    <Compile Include="Helpers\CosmosDB.fs" />
-    <Compile Include="Logger.fs" />
-    <Compile Include="SecretManager.fs" />
-    <Content Include="paket.template" />
-    <Content Include="paket.references" />
+    <Compile Include="FSharp.fs"/>
+    <Compile Include="String.fs"/>
+    <Compile Include="Result.fs" />
+    <Compile Include="Regex.fs"/>
+    <Compile Include="Option.fs"/>
+    <Compile Include="Async.fs"/>
+    <Compile Include="Optics.fs"/>
+    <Compile Include="Helpers\CosmosDB.fs"/>
+    <Compile Include="Logger.fs"/>
+    <Compile Include="SecretManager.fs"/>
+    <Content Include="paket.template"/>
+    <Content Include="paket.references"/>
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

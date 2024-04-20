@@ -2,5 +2,10 @@
     "[python]": {
         "editor.defaultFormatter": "ms-python.autopep8"
     },
-    "python.formatting.provider": "none"
+    "python.formatting.provider": "none",
+    "azureFunctions.deploySubpath": "GNogueira.SupermarketScrapeTool.Service/bin/Release/net6.0/publish",
+    "azureFunctions.projectLanguage": "F#",
+    "azureFunctions.projectRuntime": "~4",
+    "debug.internalConsoleOptions": "neverOpen",
+    "azureFunctions.preDeployTask": "publish (functions)"
 }

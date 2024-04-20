@@ -1,8 +1,5 @@
 FSharpPlus
 FsToolkit.ErrorHandling
-Microsoft.NET.Test.Sdk
-NUnit
-NUnit3TestAdapter
-NUnit.Analyzers
-coverlet.collector
-FSharp.Core
+
+group GNogueira.SupermarketScrapeTool.Test
+    NUnit
