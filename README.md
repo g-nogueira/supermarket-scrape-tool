@@ -24,8 +24,12 @@ It will then be asked for your GitHub username and password. The password should
 ### Publish a package to GitHub Nuget Feed
 
 ```bash
-dotnet paket push <nupkg-file> --url https://nuget.pkg.github.com/g-nogueira --api-key <GitHub-Access-Token>
+dotnet paket push nugets\GNogueira.SupermarketScrapeTool.Models.2.0.0-beta3.nupkg --url https://nuget.pkg.github.com/g-nogueira --api-key <GitHub-Access-Token>
 ```
+
+### Login to Azure
+We use the DefaultAzureCredential to authenticate with Azure. This will use the following methods to authenticate:
+https://learn.microsoft.com/en-us/dotnet/api/azure.identity.defaultazurecredential?view=azure-dotnet
 
 ## Todo
 
