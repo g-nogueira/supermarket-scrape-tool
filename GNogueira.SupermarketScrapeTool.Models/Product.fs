@@ -71,18 +71,18 @@ module Product =
             function
             | Kg -> "kg"
             | Un -> "un"
-            | Liter -> "liter"
-            | Rolls -> "rolls"
+            | Liter -> "ltr"
+            | Rolls -> "ro"
             | Unknown -> "unknown"
 
         static member ofString(value: string) =
             match value |> String.toLower with
-            | "kg"
-            | "kgm" -> Kg |> Ok
+            | "kg" | "kgm" -> Kg |> Ok
             | "un" -> Un |> Ok
             | "ltr" -> Liter |> Ok
             | "ro" -> Rolls |> Ok
-            | _ -> $"Price Unit not valid. Tried to parse {value}." |> Error
+            | "unknown" -> Unknown |> Ok
+            | _ -> $"Price Unit invalid. Tried to parse {value}." |> Error
 
         member this.Deconstruct() =
             this |> PriceUnit.toString
