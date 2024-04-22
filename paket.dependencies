@@ -3,6 +3,8 @@ source https://nuget.pkg.github.com/g-nogueira/index.json
 
 nuget FSharpPlus
 nuget FsToolkit.ErrorHandling
+nuget Thoth.Json.Net
+
 
 group GNogueira.SupermarketScrapeTool.API
     source https://api.nuget.org/v3/index.json
@@ -11,13 +13,13 @@ group GNogueira.SupermarketScrapeTool.API
     nuget Chiron
     nuget Giraffe
     nuget GNogueira.SupermarketScrapeTool.Models == 2.0.0-beta6
-    nuget GNogueira.SupermarketScrapeTool.Clients == 2.0.0-beta8
+    nuget GNogueira.SupermarketScrapeTool.Clients == 2.0.0-beta21
 
 group GNogueira.SupermarketScrapeTool.Clients
     source https://api.nuget.org/v3/index.json
     source https://nuget.pkg.github.com/g-nogueira/index.json
 
-    nuget GNogueira.SupermarketScrapeTool.Common == 2.0.0-beta5
+    nuget GNogueira.SupermarketScrapeTool.Common == 2.0.0-beta15
     nuget GNogueira.SupermarketScrapeTool.Models == 2.0.0-beta12
 
 group GNogueira.SupermarketScrapeTool.Models
@@ -33,8 +35,8 @@ group GNogueira.SupermarketScrapeTool.Scrapper
     nuget Microsoft.Azure.WebJobs.Extensions.CosmosDB
     nuget Fizzler.Systems.HtmlAgilityPack
     nuget GNogueira.SupermarketScrapeTool.Models == 2.0.0-beta12
-    nuget GNogueira.SupermarketScrapeTool.Clients == 2.0.0-beta14
-    nuget GNogueira.SupermarketScrapeTool.Common == 2.0.0-beta9
+    nuget GNogueira.SupermarketScrapeTool.Clients == 2.0.0-beta21
+    nuget GNogueira.SupermarketScrapeTool.Common == 2.0.0-beta15
     
 group GNogueira.SupermarketScrapeTool.Common
     source https://api.nuget.org/v3/index.json
@@ -44,23 +46,6 @@ group GNogueira.SupermarketScrapeTool.Common
     nuget Azure.Security.KeyVault.Secrets
     nuget Microsoft.Azure.Cosmos ~>  3.38.0
     nuget Microsoft.Extensions.Logging
-    
-group GNogueira.SupermarketScrapeTool.Functions.ProductPopulator
-    source https://api.nuget.org/v3/index.json
-    source https://nuget.pkg.github.com/g-nogueira/index.json
-
-    nuget Microsoft.Azure.WebJobs
-    nuget GNogueira.SupermarketScrapeTool.Models == 2.0.0-beta6
-    nuget GNogueira.SupermarketScrapeTool.Clients == 2.0.0-beta8
-
-group GNogueira.SupermarketScrapeTool.Service
-    source https://api.nuget.org/v3/index.json
-    source https://nuget.pkg.github.com/g-nogueira/index.json
-
-    nuget Fizzler.Systems.HtmlAgilityPack
-    nuget Microsoft.Azure.WebJobs
-    nuget GNogueira.SupermarketScrapeTool.Models == 2.0.0-beta6
-    nuget GNogueira.SupermarketScrapeTool.Clients == 2.0.0-beta8
     
 group GNogueira.SupermarketScrapeTool.Test
     source https://api.nuget.org/v3/index.json
