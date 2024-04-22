@@ -28,12 +28,9 @@ module CosmosDbInitializer =
             |> Async.RunSynchronously
             |> stopOnFail
 
-        let dbName = secretManager.GetCosmosDbName() |> Async.RunSynchronously |> stopOnFail
-
         connectionString |> createCosmosClient
 
 type ICosmosDbClient =
-    abstract GetContainer: string -> Container
     abstract PricesContainer: Container
     abstract ProductsContainer: Container
 
@@ -51,6 +48,3 @@ type CosmosDbClient(secretManager: ISecretClient, logger: ILogger) =
     interface ICosmosDbClient with
         member this.PricesContainer = client.GetContainer(dbName, "Items")
         member this.ProductsContainer = client.GetContainer(dbName, "Products")
-
-        member this.GetContainer containerName =
-            client.GetContainer(dbName, containerName)

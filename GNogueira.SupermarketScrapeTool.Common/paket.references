@@ -1,5 +1,6 @@
 FSharpPlus
 FsToolkit.ErrorHandling
+Thoth.Json.Net
 
 group GNogueira.SupermarketScrapeTool.Common
     Azure.Identity

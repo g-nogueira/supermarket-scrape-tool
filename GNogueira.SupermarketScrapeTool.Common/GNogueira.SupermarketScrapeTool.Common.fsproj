@@ -15,9 +15,9 @@
     <Compile Include="Option.fs"/>
     <Compile Include="Async.fs"/>
     <Compile Include="Optics.fs"/>
+    <Compile Include="Env.fs" />
     <Compile Include="Helpers\CosmosDB.fs"/>
     <Compile Include="Logger.fs"/>
-    <Compile Include="SecretManager.fs"/>
     <Content Include="paket.template"/>
     <Content Include="paket.references"/>
   </ItemGroup>
