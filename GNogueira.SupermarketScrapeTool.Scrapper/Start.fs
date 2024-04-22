@@ -71,7 +71,6 @@ module Start =
                             Result.teeError (fun e -> logger.Log(Exception("Error running scrapper.", e)))
                             >> ignore
                         )
-
                         result)
                     >> Async.map (List.ofArray >> List.sequenceResultM)
                 )

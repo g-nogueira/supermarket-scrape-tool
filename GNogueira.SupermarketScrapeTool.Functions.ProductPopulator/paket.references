@@ -1,4 +1,0 @@
-group GNogueira.SupermarketScrapeTool.Functions.ProductPopulator
-Microsoft.Azure.WebJobs
-GNogueira.SupermarketScrapeTool.Models
-GNogueira.SupermarketScrapeTool.Clients

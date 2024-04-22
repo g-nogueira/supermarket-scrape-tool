@@ -184,3 +184,7 @@ type ProductClient(cosmosDbClient: ICosmosDbClient) =
                 | HttpStatusCode.OK
                 | HttpStatusCode.Created -> AsyncResult.ok ()
                 | _ -> "Failed to upsert product" |> exn |> AsyncResult.error)
+
+    static member GetClient(cosmosDbClient: ICosmosDbClient) =
+        
+        ProductClient(cosmosDbClient)
