@@ -1,0 +1,38 @@
+version: '3.7'
+
+services:
+  
+  database:
+    container_name: cosmosdb-demo-database
+    hostname: demo-database.local
+    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator
+    cpus: 2.0
+    mem_limit: 3g
+    tty: true
+    ports:
+      - '8081:8081'
+      - '8900:8900'
+      - '8901:8901'
+      - '8902:8902'
+      - '10250:10250'
+      - '10251:10251'
+      - '10252:10252'
+      - '10253:10253'
+      - '10254:10254'
+      - '10255:10255'
+      - '10256:10256'
+      - '10350:10350'
+    environment:
+      - AZURE_COSMOS_EMULATOR_PARTITION_COUNT=3
+      - AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=true # without this set to true SDK doesn't work and hangs
+      - AZURE_COSMOS_EMULATOR_IP_ADDRESS_OVERRIDE=127.0.0.1 # without this set SDK doesn't work. On local pc set 127.0.0.1
+      - AZURE_COSMOS_EMULATOR_ALLOW_NETWORK_ACESS=true
+    networks:
+      cosmosdb-demo-network:
+        ipv4_address: 172.24.0.99 
+networks:
+  cosmosdb-demo-network:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.24.0.0/16"
