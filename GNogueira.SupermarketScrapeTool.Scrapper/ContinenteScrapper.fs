@@ -2,46 +2,24 @@ module GNogueira.SupermarketScrapeTool.Scrapper.ContinenteScrapper
 
 open System
 open System.Net.Http
-open System.Text.RegularExpressions
 open FSharpPlus
 open FSharp.Core
 open HtmlAgilityPack
 open FsToolkit.ErrorHandling
-open FsToolkit.ErrorHandling.OptionCE
 open Fizzler.Systems.HtmlAgilityPack
-open CompositionRoot
 open GNogueira.SupermarketScrapeTool.Scrapper.Models
 open GNogueira.SupermarketScrapeTool.Common
 open GNogueira.SupermarketScrapeTool.Models
 
-
 let pageStart = 0
 let pageSize = 10000
 
-let supermarketUrl =
+let supermarketUrl pageStart pageSize =
     $"https://www.continente.pt/on/demandware.store/Sites-continente-Site/default/Search-UpdateGrid?cgid=col-produtos&pmin=0%%2e01&start={pageStart}&sz={pageSize}"
 
 let productUrl url = $"https://www.continente.pt/{url}"
 
 let supermarket = Continente
-
-module HtmlNode =
-    let invert f a b = f b a
-
-    let tryQuerySelector selector (node: HtmlNode) =
-        selector |> node.QuerySelector |> Option.ofObj
-
-    let getAttributeValue (attribute: string) (def: string) (node: HtmlNode) = node.GetAttributeValue(attribute, def)
-
-    let tryGetAttributeValue (attribute: string) (node: HtmlNode) =
-        node.GetAttributeValue(attribute, "") |> Option.ofString
-
-    let tryGetAny selectors (node: HtmlNode) =
-        selectors |> Seq.tryPick ((invert tryQuerySelector) node)
-
-    let tryGet selector (node: HtmlNode) = node |> tryQuerySelector selector
-
-    let innerText (node: HtmlNode) = node.InnerText
 
 [<AutoOpen>]
 module ProductExtractor =
@@ -63,7 +41,7 @@ module ProductExtractor =
             product
             |> HtmlNode.tryGetAny [ ".pwc-tile--description"; ".product-set-title .text-product-set" ]
             |> Option.bind (HtmlNode.tryGetAttributeValue "href")
-            |> Option.map (String.trimWhiteSpaces >> productUrl)
+            |> Option.map String.trimWhiteSpaces
             |> Result.ofOption "Product url not found."
 
         static member getProductName(product: HtmlNode) =
@@ -109,62 +87,66 @@ module ProductExtractor =
             |> Option.bind (Regex.tryGroup 1)
             |> Result.ofOption "Ean not found."
 
-
 let makeRequest (url: string) =
-    async {
-        use httpClient = new HttpClient()
-
-        let! response = httpClient.GetAsync(url) |> Async.AwaitTask
-        response.EnsureSuccessStatusCode() |> ignore
-
-        let! content = response.Content.ReadAsStringAsync() |> Async.AwaitTask
-
-        return content
-    }
+    new HttpClient()
+    |> HttpClient.getAsync (url |> HttpClient.Url.String)
+    |> AsyncResult.map _.Content
+    |> AsyncResult.bind (
+        HttpContent.readAsStringAsync
+        >> Async.AwaitTask
+        >> Async.Catch
+        >> Async.map Result.ofChoice
+        >> AsyncResult.mapError (_.Message)
+    )
 
 let stringToHtml s =
-    let doc = HtmlDocument()
-    doc.LoadHtml(s)
-    doc
+    HtmlDocument() |> HtmlDocument.loadHtml s
 
-let scrape () =
+let productOfHtml (product: HtmlNode) : Async<Result<ScrappedProduct, string>> =
+    asyncResult {
+        let! priceUnit = product |> HtmlNode.getPriceUnit
+        let! productName = product |> HtmlNode.getProductName
+        let! productPrice = product |> HtmlNode.getProductPrice
+        let! productId = product |> HtmlNode.getProductId
+        let! productUrl = product |> HtmlNode.getProductUrl
+        let! productBrand = product |> HtmlNode.getBrand
 
-    let productOfHtml (product: HtmlNode) =
-        asyncResult {
-            let! priceUnit = product |> HtmlNode.getPriceUnit
-            let! productName = product |> HtmlNode.getProductName
-            let! productPrice = product |> HtmlNode.getProductPrice
-            let! productId = product |> HtmlNode.getProductId
-            let! productUrl = product |> HtmlNode.getProductUrl
-            let! productBrand = product |> HtmlNode.getBrand
+        let! ean =
+            makeRequest productUrl
+            |> Async.map (Result.bind stringToHtml)
+            |> Async.map (Result.bind HtmlNode.getEan)
 
-            let! ean =
-                makeRequest productUrl
-                |> Async.RunSynchronously
-                |> stringToHtml
-                |> HtmlNode.getEan
+        let productImageUrl = product |> HtmlNode.getProductImageUrl |> Option.ofResult
 
-            let productImageUrl = product |> HtmlNode.getProductImageUrl |> Option.ofResult
+        let productSource =
+            { ProductSource.ProductId = productId
+              Name = supermarket
+              ProductUrl = productUrl
+              ProductImageUrl = productImageUrl }
 
-            let productSource =
-                { ProductSource.ProductId = productId
-                  Name = supermarket
-                  ProductUrl = productUrl
-                  ProductImageUrl = productImageUrl }
+        return
+            { ScrappedProduct.Id = ean |> ProductId
+              Name = productName
+              CurrentPrice =
+                { PriceEntry.Date = DateTime.Now
+                  Price = productPrice
+                  PriceUnit = priceUnit
+                  Source = productSource }
+              Brand = productBrand
+              Source = productSource
+              Ean = ean }
+    }
 
-            return
-                { ScrappedProduct.Id = ean |> ProductId
-                  Name = productName
-                  CurrentPrice =
-                    { PriceEntry.Date = DateTime.Now
-                      Price = productPrice
-                      PriceUnit = priceUnit
-                      Source = productSource }
-                  Brand = productBrand
-                  Source = productSource
-                  Ean = ean }
-        }
+let scrape () : Async<Result<ScrappedProduct, string> seq> =
+    async {
+        let! productNodesResult =
+            supermarketUrl pageSize pageStart
+            |> makeRequest
+            |> AsyncResult.bind (stringToHtml >> Async.retn)
+            |> AsyncResult.map findProductNodes
 
-    supermarketUrl
-    |> makeRequest
-    |> Async.bind (stringToHtml >> findProductNodes >> Seq.map productOfHtml >> Async.Parallel >> Async.map Seq.ofArray)
+        return!
+            match productNodesResult with
+            | Ok nodes -> nodes |> Seq.map productOfHtml |> Async.Parallel |> Async.map Seq.ofArray
+            | Result.Error e -> e |> Result.Error |> Seq.singleton |> Async.retn
+    }

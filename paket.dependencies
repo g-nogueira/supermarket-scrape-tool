@@ -51,4 +51,5 @@ group GNogueira.SupermarketScrapeTool.Test
     source https://api.nuget.org/v3/index.json
     source https://nuget.pkg.github.com/g-nogueira/index.json
 
-    nuget NUnit
+    nuget xunit
+    nuget FsUnit.Xunit

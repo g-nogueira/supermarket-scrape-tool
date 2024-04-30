@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <GenerateProgramFile>false</GenerateProgramFile>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ProductEndpointTests.fs" />
-    <Compile Include="Program.fs" />
     <Content Include="paket.references" />
+    <Compile Include="Helpers\PingoDoceScrapperHelper.fs" />
+    <Compile Include="Helpers\ContinenteScrapperHelper.fs" />
+    <Compile Include="PingoDoceScrapperTests.fs" />
+    <Compile Include="ContinenteScrapperTests.fs" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.AspNetCore.Hosting">
       <HintPath>..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\7.0.5\Microsoft.AspNetCore.Hosting.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GNogueira.SupermarketScrapeTool.Scrapper\GNogueira.SupermarketScrapeTool.Scrapper.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

@@ -2,4 +2,5 @@ FSharpPlus
 FsToolkit.ErrorHandling
 
 group GNogueira.SupermarketScrapeTool.Test
-    NUnit
+    xUnit
+    FsUnit.Xunit
