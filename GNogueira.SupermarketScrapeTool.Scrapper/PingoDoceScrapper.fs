@@ -4,6 +4,7 @@ open System
 open System.Net.Http
 open FSharpPlus
 open FSharp.Core
+open FsToolkit.ErrorHandling
 open GNogueira.SupermarketScrapeTool.Models
 open GNogueira.SupermarketScrapeTool.Common
 open GNogueira.SupermarketScrapeTool.Scrapper.Models
@@ -18,14 +19,17 @@ let supermarketUrl =
 
 type PingoDoceResponse =
     { sections: PingoDoceSections
-      categories: PingoDoceCategory list
-      brands: PingoDoceBrand list }
+      categories: PingoDoceCategory []
+      brands: PingoDoceBrand [] }
+    
+    static member ofJson (json: string) =
+        Newtonsoft.Json.JsonConvert.DeserializeObject<PingoDoceResponse>(json)
 
 and PingoDoceSections = { ``null``: SectionDTO }
 
 and SectionDTO =
     { total: int
-      products: seq<PingoDoceProduct>
+      products: PingoDoceProduct []
       order: int
       name: string option }
 
@@ -50,7 +54,7 @@ and PingoDoceSource =
       // Example: https://mercadao.pt/store/pingo-doce/product/vela-formato-4-papstar-1-un
       slug: string
       // The ean code is used to identify the product globally
-      eans: string[]
+      eans: string []
       brand: Brand }
 
 and PingoDoceCategory = { id: string; name: string }
@@ -66,60 +70,62 @@ type PingoDoceProduct with
         $"https://mercadao.pt/store/pingo-doce/product/{dto._source.slug}"
 
 let makeRequest (url: string) =
-    async {
-        use httpClient = new HttpClient()
+    use httpClient = new HttpClient()
 
-        httpClient.DefaultRequestHeaders.Add(
-            "User-Agent",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
-        )
+    httpClient.DefaultRequestHeaders.Add(
+        "User-Agent",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
+    )
+    
+    httpClient
+    |> HttpClient.getAsync (url |> HttpClient.Url.String)
+    |> AsyncResult.map _.Content
+    |> AsyncResult.bind (HttpContent.readAsStringAsync >> Async.AwaitTask >> Async.Catch >> Async.map Result.ofChoice >> AsyncResult.mapError (_.Message))
 
-        let! response = httpClient.GetAsync(url) |> Async.AwaitTask
-        response.EnsureSuccessStatusCode() |> ignore
+let toProduct product =
+    Result.result {
+        let productDto = product._source
+        let ean = productDto.eans |> head
+        
+        let! priceUnit = productDto.netContentUnit |> PriceUnit.ofString
+        let productName = productDto.firstName
+        let productPrice = productDto.unitPrice
+        let productId = product._id
+        let productUrl = product |> PingoDoceProduct.mkUrl
+        let productBrand = productDto.brand.name
+        let productImageUrl = product |> PingoDoceProduct.mkImageUrl
+        let! productEan = ean |> Result.ofString $"Invalid EAN. Got {ean}."
 
-        let! content = response.Content.ReadAsStringAsync() |> Async.AwaitTask
+        let productSource =
+            { ProductSource.ProductId = productId
+              Name = supermarket
+              ProductUrl = productUrl
+              ProductImageUrl = Some productImageUrl }
 
-        return content
+        return
+            { ScrappedProduct.Id = productEan |> ProductId
+              Name = productName
+              CurrentPrice =
+                { PriceEntry.Date = DateTime.Now
+                  Price = productPrice
+                  PriceUnit = priceUnit
+                  Source = productSource }
+              Brand = productBrand
+              Source = productSource
+              Ean = productEan }
     }
-
-let scrape () =
-    let deserialize = Newtonsoft.Json.JsonConvert.DeserializeObject<PingoDoceResponse>
-
-    let getProductDTOs data = data.sections.``null``.products
-
-    let toProduct product =
-        Result.result {
-            let productDto = product._source
-            let ean = productDto.eans |> head
-            
-            let! priceUnit = productDto.netContentUnit |> PriceUnit.ofString
-            let productName = productDto.firstName
-            let productPrice = productDto.unitPrice
-            let productId = product._id
-            let productUrl = product |> PingoDoceProduct.mkUrl
-            let productBrand = productDto.brand.name
-            let productImageUrl = product |> PingoDoceProduct.mkImageUrl
-            let! productEan = ean |> Result.ofString $"Invalid EAN. Got {ean}."
-
-            let productSource =
-                { ProductSource.ProductId = productId
-                  Name = supermarket
-                  ProductUrl = productUrl
-                  ProductImageUrl = Some productImageUrl }
-
-            return
-                { ScrappedProduct.Id = productEan |> ProductId
-                  Name = productName
-                  CurrentPrice =
-                    { PriceEntry.Date = DateTime.Now
-                      Price = productPrice
-                      PriceUnit = priceUnit
-                      Source = productSource }
-                  Brand = productBrand
-                  Source = productSource
-                  Ean = productEan }
-        }
-
-    supermarketUrl
-    |> makeRequest
-    |> Async.map (deserialize >> getProductDTOs >> Seq.map toProduct)
+let scrape () : Async<Result<ScrappedProduct,string> seq> =
+    async {
+        let getProductDTOs data = data.sections.``null``.products
+        
+        let! result =
+            supermarketUrl
+            |> makeRequest
+            |> AsyncResult.map (PingoDoceResponse.ofJson >> getProductDTOs)
+        
+        return
+            match result with
+            | Ok data -> data |> Seq.map toProduct
+            | Result.Error e -> e |> Result.Error |> Seq.singleton
+    }
+    

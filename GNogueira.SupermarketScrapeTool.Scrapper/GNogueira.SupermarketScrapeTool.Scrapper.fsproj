@@ -11,6 +11,7 @@
     <Compile Include="Models\ProductLens.fs"/>
     <Compile Include="Models\ScrappedProduct.fs" />
     <Compile Include="Models\ProductDto.fs" />
+    <Compile Include="Models\Extensions.fs" />
     <Compile Include="ContinenteScrapper.fs" />
     <Compile Include="PingoDoceScrapper.fs" />
     <Compile Include="Scrapper.fs" />
