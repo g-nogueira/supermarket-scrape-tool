@@ -11,9 +11,11 @@ group GNogueira.SupermarketScrapeTool.API
     source https://nuget.pkg.github.com/g-nogueira/index.json
 
     nuget Chiron
-    nuget Giraffe
-    nuget GNogueira.SupermarketScrapeTool.Models == 2.0.0-beta6
+    nuget Swashbuckle.AspNetCore
+    nuget Microsoft.AspNetCore.OpenApi
+    nuget GNogueira.SupermarketScrapeTool.Models == 2.0.0-beta12
     nuget GNogueira.SupermarketScrapeTool.Clients == 2.0.0-beta21
+    nuget GNogueira.SupermarketScrapeTool.Common == 2.0.0-beta15
 
 group GNogueira.SupermarketScrapeTool.Clients
     source https://api.nuget.org/v3/index.json

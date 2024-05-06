@@ -1,69 +1,48 @@
-﻿namespace GNogueira.SupermarketScrapeTool.API.Endpoints
+namespace GNogueira.SupermarketScrapeTool.API.Endpoints
 
-open System
-open FsToolkit.ErrorHandling
 open GNogueira.SupermarketScrapeTool.API.DTOs
 open GNogueira.SupermarketScrapeTool.Clients
-open Giraffe
+open GNogueira.SupermarketScrapeTool.Models
 open Microsoft.AspNetCore.Http
-open GNogueira.SupermarketScrapeTool.Common.FSharp.Queryable
 
+[<AutoOpen>]
 module ProductEndpoint =
-    let getProductByIdHandler  (productId: Guid) (next: HttpFunc) (ctx: HttpContext) =
-        let productClient = ctx.GetService<IProductClient>()
+    let getProductByIdHandler (id: string) (productClient: IProductClient) =
+            task {
+                let getResult product =
+                    match product with
+                    | Result.Ok product -> (product |> ProductResponseDto.ofDomain |> TypedResults.Ok) :> IResult
+                    | Result.Error e -> TypedResults.BadRequest(e) :> IResult
 
-        let product =
-            productClient.GetById (productId |> string)
-            |> Async.RunSynchronously
+                let productId, productClient = id, productClient
 
-        match product with
-        | Ok p -> json p next ctx
-        | Error e ->
-            setBodyFromString e.Message |> ignore
-            setStatusCode 404 next ctx
+                let! product = productClient.GetById(productId |> Product.ProductId)
 
-    let getProductsPagedHandler (request: PagedRequestDto) (next: HttpFunc) (ctx: HttpContext) =
-        let productClient = ctx.GetService<IProductClient>()
+                return getResult product
+            }
+    
+    let getProductListHandler (productClient: IProductClient) =
+        task {
+            let getResult products =
+                match products with
+                | Result.Ok products -> (products |> Seq.map ProductResponseDto.ofDomain |> TypedResults.Ok) :> IResult
+                | Result.Error e -> TypedResults.BadRequest(e) :> IResult
 
-        let product =
-            productClient.GetPaged request.ItemsPerPage request.Page
-            |> Async.RunSynchronously
+            let! products = productClient.GetAll()
 
-        match product with
-        | Ok p -> json p next ctx
-        | Error e ->
-            setBodyFromString e.Message |> ignore
-            setStatusCode 404 next ctx
+            return getResult products
+        }
+    
+    let getProductListPaginatedHandler (count: int) (page: int) (productClient: IProductClient) =
+        task {
+            let getResult products =
+                match products with
+                | Result.Ok products -> (products |> Seq.map ProductResponseDto.ofDomain |> TypedResults.Ok) :> IResult
+                | Result.Error e -> TypedResults.BadRequest(e) :> IResult
 
-    let searchProductsHandler (request: SearchProductRequestDto) (next: HttpFunc) (ctx: HttpContext) =
-        let productClient = ctx.GetService<IProductClient>()
+            let! products = productClient.GetPaged count page
 
-        let product =
-            productClient.Search
-                request.ItemsPerPage
-                request.Page
-                request.Title
-                request.Supermarket
-                request.UpdatedAfter
-                request.UpdatedBefore
-                request.UpdatedAt
-                (request.Sorting |> (Option.bind (Sorting.ofString >> Result.toOption)))
-            |> Async.RunSynchronously
+            return getResult products
+        }
 
-        match product with
-        | Ok p -> json p next ctx
-        | Error e ->
-            setBodyFromString e.Message |> ignore
-            setStatusCode 404 next ctx
 
-    let parsingError (err : string) = RequestErrors.BAD_REQUEST err
-    let v1Endpoints : HttpHandler =
-        choose [
-            GET
-            >=> subRoute "/products"
-               (choose [
-                    route "/" >=> tryBindQuery<PagedRequestDto> parsingError None getProductsPagedHandler
-                    routef "/%O" getProductByIdHandler
-                    route "/search" >=> tryBindQuery<SearchProductRequestDto> parsingError None searchProductsHandler
-                ])
-        ]

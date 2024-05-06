@@ -1,84 +1,113 @@
 module GNogueira.SupermarketScrapeTool.API.App
 
 open System
-open GNogueira.SupermarketScrapeTool.API.Endpoints
+open System.Threading.Tasks
+open Microsoft.AspNetCore.Builder
+open Microsoft.AspNetCore.Routing
+open Microsoft.AspNetCore.Http
+open Microsoft.Extensions.DependencyInjection
+open Microsoft.Extensions.Logging
+open Microsoft.Extensions.Hosting
+open Microsoft.OpenApi.Models
+open Swashbuckle.AspNetCore
 open GNogueira.SupermarketScrapeTool.Clients
 open GNogueira.SupermarketScrapeTool.Common
-open Microsoft.AspNetCore.Builder
-open Microsoft.AspNetCore.Cors.Infrastructure
-open Microsoft.AspNetCore.Hosting
-open Microsoft.Extensions.Hosting
-open Microsoft.Extensions.DependencyInjection
-open Giraffe
-open Microsoft.Extensions.Logging
+open GNogueira.SupermarketScrapeTool.API.Endpoints
 
-// ---------------------------------
-// Web app
-// ---------------------------------
+let mapV1Endpoints (app: RouteGroupBuilder) =
+    app
+        .MapGet("/products/all", Func<IProductClient, Task<IResult>> getProductListHandler)
+        .WithName("GetProducts")
+        .WithDescription("Get all products")
 
-let webApp =
-    choose
-        [ subRoute
-              "/api"
-              (choose
-                  [ subRoute "/v1" (choose [ PriceEndpoint.v1Endpoints; ProductEndpoint.v1Endpoints ])
-                    subRoute "/v2" (choose []) ])
-          setStatusCode 404 >=> text "Not Found" ]
-
-// ---------------------------------
-// Error handler
-// ---------------------------------
-
-let errorHandler (ex: Exception) (logger: ILogger) =
-    logger.LogError(ex, "An unhandled exception has occurred while executing the request.")
-    clearResponse >=> setStatusCode 500 >=> text ex.Message
-
-// ---------------------------------
-// Config and Main
-// ---------------------------------
-
-let configureCors (builder: CorsPolicyBuilder) =
-    builder
-        .WithOrigins("http://localhost:5000", "https://localhost:5001", "http://127.0.0.1:5173")
-        .AllowAnyMethod()
-        .AllowAnyHeader()
+        .WithOpenApi()
     |> ignore
 
-let configureApp (app: IApplicationBuilder) =
-    let env = app.ApplicationServices.GetService<IWebHostEnvironment>()
+    app
+        .MapGet("/products", Func<int, int, IProductClient, Task<IResult>> getProductListPaginatedHandler)
+        .WithName("GetProductsPaginated")
+        .WithDescription("Get all products paginated")
+        .WithOpenApi()
+    |> ignore
 
-    (match env.IsDevelopment() with
-     | true -> app.UseDeveloperExceptionPage()
-     | false -> app.UseGiraffeErrorHandler(errorHandler).UseHttpsRedirection())
-        .UseCors(configureCors)
-        .UseGiraffe(webApp)
+    app
+        .MapGet("/products/{id}", Func<string, IProductClient, Task<IResult>> getProductByIdHandler)
+        .WithName("GetProductById")
+        .WithDescription("Get a product by id")
+        .Accepts<string>("id", "The product id")
+        .WithOpenApi()
+    |> ignore
 
-let configureLogging (builder: ILoggingBuilder) =
-    builder.AddConsole().AddDebug() |> ignore
+    app
 
-let configureServices (services: IServiceCollection) =
-    services.AddCors() |> ignore
-    services.AddGiraffe() |> ignore
-    services.AddLogging() |> ignore
+let configureServices (builder: WebApplicationBuilder) =
+    let configureLogging (builder: ILoggingBuilder) =
+        builder.AddConsole().AddDebug() |> ignore
 
-    services.AddSingleton<ISecretClient, SecretClient>() |> ignore
-    services.AddSingleton<ICosmosDbClient, CosmosDbClient>() |> ignore
-    services.AddSingleton<Logging.ILogger>(ConsoleLogger()) |> ignore
-    services.AddSingleton<IProductPriceClient, ProductPriceClient>() |> ignore
-    services.AddSingleton<IProductClient, ProductClient>() |> ignore
+    let services = builder.Services
 
+    let swaggerGenOptions (options: SwaggerGen.SwaggerGenOptions) =
+        let openApiInfo =
+            OpenApiInfo(
+                Version = "v1",
+                Title = "Supermarket Scrape Tool API",
+                Description = "An API for compating supermarket products",
+                Contact = OpenApiContact(Name = "Gustavo Nogueira", Url = Uri("https://github.com/g-nogueira/supermarket-scrape-tool/issues"))
+            // TODO: Add license
+            // License = OpenApiLicense(
+            //     Name = "Example License",
+            //     Url = Uri("https://example.com/license")
+            // )
+            )
+
+        options.SwaggerDoc("v1", openApiInfo)
+
+    services
+        .AddCors()
+        .AddLogging(configureLogging)
+        .AddEndpointsApiExplorer()
+        .AddSwaggerGen(swaggerGenOptions)
+
+        .AddSingleton<ISecretClient, SecretClient>()
+        .AddSingleton<ICosmosDbClient, CosmosDbClient>()
+        .AddSingleton<ILogger>(ConsoleLogger())
+        .AddSingleton<IProductClient, ProductClient>()
+    |> ignore
+
+    builder
 
 [<EntryPoint>]
 let main args =
-    Host
-        .CreateDefaultBuilder(args)
-        .ConfigureWebHostDefaults(fun webHostBuilder ->
-            webHostBuilder
-                .Configure(Action<IApplicationBuilder> configureApp)
-                .ConfigureLogging(configureLogging)
-                .ConfigureServices(configureServices)
-            |> ignore)
-        .Build()
-        .Run()
+    let buildApp (builder: WebApplicationBuilder) = builder.Build()
+
+    let useSwagger (app: IApplicationBuilder) = app.UseSwagger()
+
+    let useSwaggerUI (app: IApplicationBuilder) = app.UseSwaggerUI()
+
+    let useDeveloperExceptionPage (app: IApplicationBuilder) =
+        app.UseDeveloperExceptionPage() |> ignore
+
+    let onDevEnv f (app: WebApplication) =
+        if Env.isDevEnv then f app |> ignore
+
+        app
+
+    let configureApi (app: WebApplication) =
+        app.MapGroup("api").WithTags("Root") |> mapV1Endpoints |> ignore
+
+        app
+
+    let run (app: WebApplication) = app.Run()
+
+    WebApplication.CreateBuilder(args)
+    |> configureServices
+    |> buildApp
+    |> onDevEnv (
+        useSwagger
+        >> useSwaggerUI
+        >> useDeveloperExceptionPage
+        >> ignore)
+    |> configureApi
+    |> run
 
     0
