@@ -1,4 +1,6 @@
 group GNogueira.SupermarketScrapeTool.API
 Chiron
-Giraffe
 GNogueira.SupermarketScrapeTool.Clients
+GNogueira.SupermarketScrapeTool.Common
+Microsoft.AspNetCore.OpenApi
+Swashbuckle.AspNetCore

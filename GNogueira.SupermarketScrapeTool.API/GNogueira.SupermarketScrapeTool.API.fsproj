@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <AssemblyName>GNogueira.SupermarketScrapeTool.API.App</AssemblyName>
     <EnableDefaultContentItems>false</EnableDefaultContentItems>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Models.fs" />
-    <Compile Include="HttpHandlers.fs" />
+    <Content Include="paket.references" />
+    <None Include="web.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="..\.development\.secrets">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DTOs\ProductResponseDto.fs" />
     <Compile Include="DTOs\PagedRequestDto.fs" />
-    <Compile Include="Models\Product.fs" />
-    <Compile Include="Endpoints\PriceEndpoint.fs" />
+    <Folder Include="Models\" />
     <Compile Include="Endpoints\ProductEndpoint.fs" />
     <Compile Include="Program.fs" />
-    <None Include="web.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <Content Include="paket.references" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>
