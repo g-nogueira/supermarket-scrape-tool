@@ -23,7 +23,7 @@ graph TD;
     ```powershell
     Invoke-WebRequest -Uri "https://localhost:8081/_explorer/emulator.pem" -OutFile "$env:USERPROFILE\emulatorcert.crt"
     ```
-3. Navigate to `https://localhost:8081/_explorer/index.html` and create a new database called `SupermarketScrapeTool` with a container called `Products`
+3. Navigate to `https://localhost:8081/_explorer/index.html` and create a new database called `SupermarketItems` with a container called `Products`
    > If you create with other names, also change on the file /.development/.secrets
 4. Clone the project
 5. Run `dotnet tool restore` and `dotnet paket install`

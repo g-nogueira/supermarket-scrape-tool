@@ -70,7 +70,7 @@ type PingoDoceProduct with
         $"https://mercadao.pt/store/pingo-doce/product/{dto._source.slug}"
 
 let makeRequest (url: string) =
-    use httpClient = new HttpClient()
+    let httpClient = new HttpClient()
 
     httpClient.DefaultRequestHeaders.Add(
         "User-Agent",
