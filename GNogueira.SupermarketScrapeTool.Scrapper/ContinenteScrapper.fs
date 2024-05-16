@@ -1,6 +1,7 @@
 module GNogueira.SupermarketScrapeTool.Scrapper.ContinenteScrapper
 
 open System
+open System.Text.RegularExpressions
 open System.Net.Http
 open FSharpPlus
 open FSharp.Core
@@ -12,7 +13,11 @@ open GNogueira.SupermarketScrapeTool.Common
 open GNogueira.SupermarketScrapeTool.Models
 
 let pageStart = 0
-let pageSize = 10000
+// The maximum number of products that can be fetched is 24.
+let pageSize = 24
+
+// The number of products to scrape.
+let scrapeSize = 5000
 
 let supermarketUrl pageStart pageSize =
     $"https://www.continente.pt/on/demandware.store/Sites-continente-Site/default/Search-UpdateGrid?cgid=col-produtos&pmin=0%%2e01&start={pageStart}&sz={pageSize}"
@@ -31,61 +36,77 @@ module ProductExtractor =
     type HtmlNode with
 
         static member getProductImageUrl(product: HtmlNode) =
+            let selector = "img.ct-tile-image"
+            
             product
-            |> HtmlNode.tryGet "img.ct-tile-image"
+            |> HtmlNode.tryGet selector
             |> Option.bind (HtmlNode.tryGetAttributeValue "data-src")
             |> Option.map String.trimWhiteSpaces
-            |> Result.ofOption "Product image url not found."
+            |> Result.ofOption $"Product image url not found on CSS selector {selector}."
 
         static member getProductUrl(product: HtmlNode) =
+            let selector = ".ct-pdp-details a"
+            
             product
-            |> HtmlNode.tryGetAny [ ".pwc-tile--description"; ".product-set-title .text-product-set" ]
+            |> HtmlNode.tryGet selector
             |> Option.bind (HtmlNode.tryGetAttributeValue "href")
             |> Option.map String.trimWhiteSpaces
-            |> Result.ofOption "Product url not found."
+            |> Result.ofOption $"Product url not found on CSS selector {selector}."
 
         static member getProductName(product: HtmlNode) =
+            let selector = ".pwc-tile--description"
+            
             product
-            |> HtmlNode.tryGetAny [ ".pwc-tile--description"; ".product-set-title .text-product-set" ]
+            |> HtmlNode.tryGet selector
             |> Option.map (HtmlNode.innerText >> String.trimWhiteSpaces)
-            |> Result.ofOption "Product name not found."
+            |> Result.ofOption $"Product name not found on CSS selector {selector}."
 
         static member getProductPrice(product: HtmlNode) =
+            let selector = ".js-product-price .value"
+            
             product
-            |> HtmlNode.tryGet ".js-product-price .value"
+            |> HtmlNode.tryGet selector
             |> Option.bind (HtmlNode.tryGetAttributeValue "content")
             |> Option.map (String.trimWhiteSpaces >> String.replace "," "." >> float)
-            |> Result.ofOption "Price not found."
+            |> Result.ofOption $"Price not found on CSS selector {selector}."
 
         static member getProductId(product: HtmlNode) =
+            let selector = "[data-pid]"
+            
             product
             |> HtmlNode.tryGetAttributeValue "data-pid"
             |> Option.map String.trimWhiteSpaces
-            |> Result.ofOption "Product id not found."
+            |> Result.ofOption $"Product id not found on CSS selector {selector}."
 
         static member getPriceUnit(product: HtmlNode) =
+            let selector = ".pwc-m-unit"
+            
             product
-            |> HtmlNode.tryGet ".pwc-m-unit"
+            |> HtmlNode.tryGet selector
             |> Option.bind (HtmlNode.innerText >> (Regex.tryMatch "([a-zA-Z]+)"))
             |> Option.bind (Regex.tryGroup 1)
             |> Option.map String.toLower
-            |> Result.ofOption "Price unit not found."
+            |> Result.ofOption $"Price unit not found on CSS selector {selector}."
             |> Result.bind PriceUnit.ofString
 
         static member getBrand(product: HtmlNode) =
+            let selector = ".pwc-tile--brand.col-tile--brand"
+            
             product
-            |> HtmlNode.tryGet ".pwc-tile--brand.col-tile--brand"
+            |> HtmlNode.tryGet selector
             |> Option.map (HtmlNode.innerText >> String.trimWhiteSpaces)
-            |> Result.ofOption "Product brand not found."
+            |> Result.ofOption $"Brand not found on CSS selector {selector}."
 
         static member getEan(doc: HtmlDocument) =
+            let selector = ".nutriInfoTab .js-nutritional-tab-anchor"
+            
             // https://www.continente.pt/on/demandware.store/Sites-continente-Site/default/Product-ProductNutritionalInfoTab?pid=2305902&ean=5601260037109&supplierid=5600000494387&enabledce=true
             doc.DocumentNode
-            |> HtmlNode.tryQuerySelector ".nutriInfoTab .js-nutritional-tab-anchor"
+            |> HtmlNode.tryQuerySelector selector
             |> Option.bind (HtmlNode.tryGetAttributeValue "data-url")
             |> Option.bind (Regex.tryMatch "ean=([0-9]+)")
             |> Option.bind (Regex.tryGroup 1)
-            |> Result.ofOption "Ean not found."
+            |> Result.ofOption $"EAN not found on CSS selector {selector}."
 
 let makeRequest (url: string) =
     new HttpClient()
@@ -136,6 +157,7 @@ let productOfHtml (product: HtmlNode) : Async<Result<ScrappedProduct, string>> =
               Source = productSource
               Ean = ean }
     }
+    |> AsyncResult.mapError (fun e -> $"Failed to scrape product. Reason: '{e}'.")
 
 let scrape () : Async<Result<ScrappedProduct, string> seq> =
     async {
