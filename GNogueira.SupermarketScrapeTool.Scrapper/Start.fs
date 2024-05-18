@@ -26,7 +26,18 @@ module Start =
                     | false -> source)
 
         let enrichPriceHistory (scrappedProduct: ScrappedProduct) (product: Product) =
-            product.PriceHistory |> Seq.append [ scrappedProduct.CurrentPrice ]
+            let isSameDayAs (price: PriceEntry) (price': PriceEntry) = price.Date.Date = price'.Date.Date
+            let includesPrice (price: PriceEntry) = List.exists (isSameDayAs price)
+
+            match product.PriceHistory |> Seq.toList with
+            | [] -> scrappedProduct.CurrentPrice |> Seq.singleton
+            | priceHistory when priceHistory |> includesPrice scrappedProduct.CurrentPrice ->
+                product.PriceHistory
+                |> Seq.map (fun dbPrice ->
+                    match scrappedProduct.CurrentPrice |> isSameDayAs dbPrice with
+                    | true -> scrappedProduct.CurrentPrice
+                    | false -> dbPrice)
+            | _ -> product.PriceHistory |> Seq.append [ scrappedProduct.CurrentPrice ]
 
         let createProduct (scrappedProduct: ScrappedProduct) =
             { Product.Id = scrappedProduct.Id
